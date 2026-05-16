@@ -1,0 +1,124 @@
+@import 'tailwindcss';
+
+:root{
+  --primary: #EEEEEE;
+  --secondary: #111827 ;
+  --light: #FFCC00;
+  --dark: #D3DAD9;
+  --backdrop: rgba(0, 0, 0, 0.5); /* 50% black */
+}
+
+@theme{
+  --color-primary: var(--primary);
+  --color-secondary: var(--secondary);
+  --color-dark: var(--dark);
+  --color-light: var(--light);
+  --color-backdrop: var(--backdrop);
+}
+
+body {
+ transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.link-nav{
+  @apply text-secondary text-xl font-semibold hover:bg-secondary p-2 hover:text-primary rounded-md transition-all duration-300;
+}
+
+.product-nav{
+  @apply text-secondary text-lg hover:bg-dark p-2 rounded-md transition-all duration-300
+}
+
+/* Para sa Sidebar Scrollbar */
+#side-nav::-webkit-scrollbar {
+  width: 6px; /* Gawin nating manipis para elegant tingnan */
+}
+
+#side-nav::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1); /* Kulay ng dinadaanan ng scroll */
+  border-radius: 10px;
+}
+
+#side-nav::-webkit-scrollbar-thumb {
+  background: var(--secondary); /* Tailwind's red-700 - Palitan mo kung anong gusto mo */
+  border-radius: 10px;
+  transition: background 0.3s ease;
+}
+
+#side-nav::-webkit-scrollbar-thumb:hover {
+  background: #ef4444; /* Tailwind's red-500 pag naka-hover */
+}
+
+.body-container{
+  @apply bg-primary pt-20 lg:pt-30;
+}
+
+.container-1{ /*pag gusto mo ng responsive para hind mag conflict ang sm, md, lg, at xl sa margin ratio */
+  @apply max-w-7xl mx-auto px-4;
+}
+
+.card-highlight-build{
+  @apply p-10 bg-primary rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-shadow duration-300;
+}
+
+.support-card{
+  @apply p-6 bg-primary rounded-lg shadow-md text-center text-primary;
+}
+
+.product-nav-links{
+  @apply p-3 text-primary bg-secondary font-semibold text-center hover:bg-dark duration-300 ease-out hover:text-secondary;
+}
+
+.product-card{
+  @apply p-3 md:p-7 bg-primary rounded-lg shadow-md text-center text-primary;
+}
+
+.about-card{
+  @apply p-10 bg-primary rounded-lg shadow-md text-center text-primary;
+}
+
+.article-card{
+  @apply p-7 bg-primary rounded-lg shadow-md text-primary hover:bg-dark;
+}
+
+.sys-unit-card{
+  @apply p-5 md:p-7 bg-primary rounded-lg shadow-md text-center text-primary;
+}
+
+.new-arrival-card{
+  @apply p-4 bg-primary rounded-lg shadow-md text-center text-primary;
+}
+
+.top-seller-card{
+  @apply p-4 bg-primary rounded-lg shadow-md text-center text-primary;
+}
+
+.banner-about{
+  @apply bg-primary/70 backdrop-blur-md p-6 cursor-pointer
+  bg-linear-to-t from-secondary/20 from-50% to-transparent to-50% 
+  bg-size-[100%_200%] bg-position-[0_0] 
+  hover:bg-position-[0_100%] 
+  transition-all duration-500 ease-in-out hover:text-primary/70
+}
+
+.specs-desc{
+  @apply text-secondary text-sm;
+}
+
+.footer-links{
+  @apply text-secondary text-base hover:text-dark md:text-lg lg:text-lg;
+}
+
+.social-links{
+  @apply text-secondary text-2xl hover:text-dark md:text-lg lg:text-3xl;
+}
+
+
+/*add to cart*/
+body {
+  overflow-x: hidden; /* Importante para sa push effect */
+}
+
+#main-layout {
+  transition: transform 0.5s ease-in-out;
+  will-change: transform; /* Optimizer para sa smooth animation */
+}

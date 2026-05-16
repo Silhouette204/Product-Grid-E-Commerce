@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <title>Document</title>
+</head>
+<body class="body-container">
+  <div id="nav-container">
+    </div>
+
+    <div id="main-layout">
+<section id="product-item-navigation" class="mt-10">
+   <div class="container-1">
+      
+      <div class="prod-container relative overflow-hidden px-1.5">
+<div class="absolute right-0 top-0 h-full w-20 bg-linear-to-l from-primary/50 to-transparent z-10 pointer-events-none"></div>
+         <ul id="product-nav-item" class="product-navigation-slides flex gap-2 transition-transform duration-500 ease-in-out">
+
+            <!--product-card(support-card) will be dynamically inserted here (product-nav-items.js)--> 
+     
+      </ul>
+
+<button class="prod-prev absolute bg-dark/70 rounded-4xl px-4 left-2 top-1/2 -translate-y-1/2 py-2 text-secondary text-xl hover:cursor-pointer hover:bg-primary duration-300">
+<i class="fa-solid fa-chevron-left text-xl"></i> 
+</button>
+
+<button class="prod-next absolute bg-dark/70 rounded-4xl  right-2 top-1/2 -translate-y-1/2 py-2 px-4 text-secondary text-xl hover:cursor-pointer hover:bg-primary duration-300 ">
+   <i class="fa-solid fa-chevron-right text-xl"></i> 
+</button>
+
+      </div>
+   </div>
+</section>
+
+
+<section id="laptop-product" class=" my-20">
+  
+   <div class="container-1">
+      <h1 class="text-center text-3xl font-bold my-5">LAPTOP</h1>
+      <p class="text-center text-lg text-gray-600 mb-10">Discover our range of high-quality laptops </p>
+
+      <div id="laptop-container" class="my-20 grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-5">
+
+         <!--product-card(support-card) will be dynamically inserted here (main-highlights.js)--> 
+</div>
+   </div>
+</section>
+
+</body>
+<footer id="footer">
+</footer>
+</div>
+
+<div id="cart-container"></div>
+<script type="module" src="/src/main.js"></script>
+</html>
