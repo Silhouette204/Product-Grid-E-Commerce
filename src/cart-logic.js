@@ -64,8 +64,8 @@ if (totalPriceEl) {
   if (cart.length === 0) {
     cartList.innerHTML = `<div class="flex flex-col gap-10 items-center text-center mt-20 text-gray-500">
     <h1 class="text-3xl font-semibold">Shopping Cart</h1>
-     <h3>Your cart is empty</h3>
-     <a href="/product.html" class="bg-dark w-fit p-4 round-2xl">Continue Shopping</a>
+     <h3>Your shopping cart is empty</h3>
+     <a href="/product.html" class="bg-dark w-fit py-4 px-6 rounded-3xl font-semibold text-sm hover:bg-light duration-400 ease-in-out">Continue Shopping</a>
     </div>`; 
     if (totalPriceEl) totalPriceEl.innerText = "₱0.00";
     return;
