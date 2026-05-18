@@ -154,7 +154,7 @@ export function renderCartUI() {
       </div>
     </div>
 
-    <div id="toast-notification" class="fixed top-5 left-1/2 -translate-x-1/2 bg-red-800 text-white px-6 py-3 rounded-lg shadow-2xl font-semibold text-sm z-90 flex items-center gap-3 transition-all duration-300 opacity-0 pointer-events-none transform -translate-y-4">
+    <div id="toast-notification" class="fixed top-5 left-1/2 -translate-x-1/2 bg-red-800 text-white px-6 py-3 rounded-lg shadow-2xl font-semibold text-sm z-100 flex items-center gap-3 transition-all duration-300 opacity-0 pointer-events-none transform -translate-y-4">
       <i class="fa-solid fa-triangle-exclamation text-lg"></i>
       <span id="toast-message">Your cart is empty!</span>
     </div>
@@ -255,6 +255,87 @@ export function renderCartUI() {
   </div>
 </div>
 
+
+
+
+
+<div id="receipt-modal" class="fixed inset-0 bg-black/90 backdrop-blur-md flex items-center justify-center z-90 hidden">
+      <div class="bg-zinc-950 border border-light/40 p-6 md:p-8 rounded-xl max-w-md w-full text-zinc-100 shadow-2xl mx-4 text-center relative max-h-[92vh] flex flex-col justify-between">
+        
+        <div class="absolute top-0 left-0 right-0 h-1.5 bg-light"></div>
+        
+        <div class="overflow-y-auto pr-1.5 custom-scrollbar text-left font-mono text-sm space-y-5">
+          
+          <div class="text-center space-y-1 pt-2">
+            <h3 class="text-xl font-black tracking-widest text-white uppercase">Virtual Receipt</h3>
+            <h4 class="text-sm font-bold tracking-wider text-light uppercase">Product Grid</h4>
+            <p class="text-xs text-gray-500 italic">"Your ultimate choice for tech hardware components."</p>
+            <p class="text-gray-500 font-bold select-none pt-1">===================================</p>
+            <p class="text-sm font-black tracking-widest text-white uppercase bg-zinc-900 py-1.5 rounded border border-white/5">Official Receipt</p>
+            <p class="text-gray-500 font-bold select-none">===================================</p>
+          </div>
+
+          <div class="space-y-1.5 bg-zinc-900/40 p-3.5 rounded border border-white/5 text-xs md:text-sm">
+            <div><span class="text-gray-500 font-bold">NAME:</span> <span id="receipt-name" class="text-gray-100 font-bold"></span></div>
+            <div><span class="text-gray-500 font-bold">ADDRESS:</span> <span id="receipt-address" class="text-gray-300 break-words"></span></div>
+            <div><span class="text-gray-500 font-bold">EMAIL:</span> <span id="receipt-email" class="text-gray-300 truncate block"></span></div>
+            <div><span class="text-gray-500 font-bold">PHONE:</span> <span id="receipt-phone" class="text-gray-300"></span></div>
+            <div class="pt-2 mt-2 border-t border-dashed border-white/10 flex justify-between items-center">
+              <span class="text-gray-400 font-bold text-xs">REFERENCE NO:</span> 
+              <span id="receipt-ref" class="text-light font-black tracking-wide text-sm"></span>
+            </div>
+          </div>
+
+          <div>
+            <p class="text-xs font-black text-gray-400 uppercase tracking-wider mb-2 border-b border-white/10 pb-1">Product List:</p>
+            <div id="receipt-items-breakdown" class="space-y-3"></div>
+          </div>
+
+          <div class="border-t border-dashed border-white/20 pt-3 space-y-1.5 bg-zinc-900/20 p-3 rounded">
+            <div class="flex justify-between">
+              <span class="text-gray-500 font-bold">SUB TOTAL:</span>
+              <span id="receipt-subtotal" class="text-gray-300 font-bold">₱0.00</span>
+            </div>
+            <div class="flex justify-between text-xs">
+              <span class="text-gray-500">TAX (12% VAT):</span>
+              <span id="receipt-tax" class="text-gray-400">₱0.00</span>
+            </div>
+            <div class="flex justify-between text-xs">
+              <span class="text-gray-500">SHIPPING FEE:</span>
+              <span id="receipt-shipping" class="text-gray-400">₱50.00</span>
+            </div>
+            <div class="flex justify-between items-center text-base font-sans font-black border-t border-dashed border-white/20 pt-2.5 mt-2">
+              <span class="text-gray-100 uppercase tracking-wide text-sm">TOTAL AMOUNT:</span>
+              <span id="receipt-total" class="text-orange-400 text-lg font-black">₱0.00</span>
+            </div>
+          </div>
+
+          <div class="flex flex-col items-center justify-center py-3 bg-zinc-900/50 rounded border border-white/5 space-y-2.5">
+            <div class="text-center text-xs text-gray-400 font-black tracking-wider uppercase">Secure Validation QR:</div>
+            <div class="p-2.5 bg-white rounded shadow-md flex items-center justify-center">
+              <i class="fa-solid fa-qrcode text-6xl text-zinc-950"></i>
+            </div>
+            <div class="w-full text-left px-3 pt-2 space-y-1 text-xs border-t border-white/5 font-mono text-gray-500">
+              <div class="flex justify-between"><span>TXN NO:</span><span id="receipt-txn-num" class="text-gray-400 font-bold"></span></div>
+              <div class="flex justify-between"><span>INVOICE NO:</span><span id="receipt-invoice-num" class="text-gray-400 font-bold"></span></div>
+            </div>
+          </div>
+
+          <div class="text-center text-gray-500 font-bold select-none pt-1">
+            ===========================================
+            <p class="text-xs text-gray-400 font-sans tracking-normal font-medium my-2 leading-relaxed">
+              Simulation Complete. This is a secure system mockup. Thank you for your support and purchase!
+            </p>
+            ===========================================
+          </div>
+
+        </div>
+
+        <button type="button" onclick="closeAllAndReset()" class="w-full mt-5 bg-light text-zinc-950 font-black py-3.5 rounded text-xs uppercase tracking-widest transition hover:bg-white hover:cursor-pointer shadow-lg font-sans">
+          Done & Clear Cart
+        </button>
+      </div>
+    </div>
   `;
 
   const bankSelect = document.querySelector('#cust-bank');
@@ -578,17 +659,68 @@ window.openFinalCheckFlow = function(bank, radio) {
   finalCheckModal.classList.remove('hidden');
 
   // 5. Setup ang Confirmation Button Trigger
-  const confirmBtn = document.querySelector('#proceed-to-otp-btn');
-  confirmBtn.onclick = () => {
-    // Para sa ngayon, itatago lang muna natin ang modal para malinis tingnan habang hindi pa natin ginagalaw ang receipt.
-    finalCheckModal.classList.add('hidden');
-    
-     // Mag-ge-generate ng random Reference Number para sa tagumpay na order
-     const refNumber = "REF-" + Math.floor(10000000 + Math.random() * 90000000);
-     const customerName = document.querySelector('#cust-name').value;
+ // 5. Setup ang Confirmation Button Trigger
+ const confirmBtn = document.querySelector('#proceed-to-otp-btn');
+ confirmBtn.onclick = () => {
+   // Isara ang Final Confirmation Layout View
+   finalCheckModal.classList.add('hidden');
+   
+   // I-extract ang pure numeric amount value mula sa string (Tinatanggal ang ₱ at commas para sa math operation)
+   const purePriceString = totalPrice.replace(/[^\d.]/g, '');
+   const totalAmountNum = parseFloat(purePriceString) || 0;
 
-     showToast(`Order Confirmed, Thank you!, ${customerName}! Successfully ordered. Ref: ${refNumber}`, "success")
-  };
+   // --- FORMULA COMPUTATION PARA SA POS RECEIPT STATE ---
+   const fixedShippingFee = 50.00; 
+   // Bale ang total price ng catalog mo ay assumed na Inclusive na ng Tax at Shipping para mag-match sa binayaran sa cart
+   const subtotalCalc = totalAmountNum - fixedShippingFee;
+   const taxCalc = subtotalCalc * 0.12; // 12% Government VAT framework layout
+
+   // Random serial telemetry generators para sa backend logging simulation
+   const refNumber = "REF-" + Math.floor(10000000 + Math.random() * 90000000);
+   const txnNumber = "TXN-" + Math.floor(100000 + Math.random() * 900000) + "-PGRID";
+   const invoiceNumber = "SI-" + Math.floor(20260000 + Math.random() * 99999);
+
+   const customerName = document.querySelector('#cust-name').value;
+   
+   // Formatting system configuration helper para mabalik ang standard peso signs at decimal structure
+   const formatter = new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP' });
+
+   // 6. I-INJECT ANG CUSTOMER PROFILE DATA SA VIRTUAL RECEIPT
+   document.querySelector('#receipt-name').innerText = customerName;
+   document.querySelector('#receipt-address').innerText = document.querySelector('#cust-address').value;
+   document.querySelector('#receipt-email').innerText = document.querySelector('#cust-email').value;
+   document.querySelector('#receipt-phone').innerText = `+63 ${document.querySelector('#cust-phone').value}`;
+   document.querySelector('#receipt-ref').innerText = refNumber;
+
+   // 7. I-INJECT ANG MATHEMATICAL CALCULATION ENTRIES
+   document.querySelector('#receipt-subtotal').innerText = formatter.format(subtotalCalc);
+   document.querySelector('#receipt-tax').innerText = formatter.format(taxCalc);
+   document.querySelector('#receipt-shipping').innerText = formatter.format(fixedShippingFee);
+   document.querySelector('#receipt-total').innerText = totalPrice; // Direct link to matched initial validation price
+
+   // I-inject ang telemetry transaction fields
+   document.querySelector('#receipt-txn-num').innerText = txnNumber;
+   document.querySelector('#receipt-invoice-num').innerText = invoiceNumber;
+
+   // 8. DYNAMIC PRODUCT BREAKDOWN: I-re-render ang compact pure receipt-style list ng mga aytem sa dulo
+   const receiptItemsContainer = document.querySelector('#receipt-items-breakdown');
+   if (receiptItemsContainer) {
+     receiptItemsContainer.innerHTML = savedCart.map(item => `
+       <div class="flex justify-between items-start text-[10px] leading-tight">
+         <div class="max-w-[200px] truncate">
+           <span class="font-bold text-gray-200 uppercase">${item.brand} ${item.model}</span>
+           <div class="text-[9px] text-gray-500">Qty: ${item.quantity} x ${item.price}</div>
+         </div>
+         <span class="text-gray-300 font-medium font-mono">${item.price}</span>
+       </div>
+     `).join('');
+   }
+
+   // 9. BUKASAN ANG VIRTUAL RECEIPT AT IPAKITA ANG SABAY NA SUCCESS TOAST!
+   document.querySelector('#receipt-modal').classList.remove('hidden');
+
+    showToast(`Order Confirmed, Thank you!, ${customerName}! Successfully ordered. Ref: ${refNumber}`, "success")
+ };
 };
 
 // Cancel operation handler sakaling magbago ang isip sa dulo
@@ -626,3 +758,23 @@ function showToast(message, type = "error") {
     toast.classList.add('opacity-0', 'pointer-events-none', '-translate-y-4');
   }, 4000);
 }
+
+window.closeAllAndReset = function() {
+  // 1. Siguraduhing nakatago ang receipt modal bago mag-navigate
+  const receiptModal = document.querySelector('#receipt-modal');
+  if (receiptModal) {
+    receiptModal.classList.add('hidden');
+  }
+  
+  // 2. BURAHIN ANG DATA SA LOCAL STORAGE (Para zero out ang cart list mo)
+  localStorage.removeItem('pc_grid_cart');
+  
+  // 3. I-reset ang checkout form values para malinis ang inputs sa susunod na transaksyon
+  const form = document.querySelector('#checkout-form');
+  if (form) form.reset();
+
+  // 4. REDIRECTION TO MAIN PAGE:
+  // Kung gusto mong bumalik sa main landing page/home catalog mo, palitan ang '/' ng 'index.html' depende sa file structure mo.
+  // Gagamit tayo ng window.location.href para siguradong fresh reload ang salubong sa main page.
+  window.location.href = './index.html'; 
+};
