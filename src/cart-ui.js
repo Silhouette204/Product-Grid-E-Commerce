@@ -184,6 +184,77 @@ export function renderCartUI() {
       </div>
     </div>
 
+
+
+
+<div id="final-check-modal" class="fixed inset-0 bg-black/85 backdrop-blur-md flex items-center justify-center z-80 hidden">
+  <div class="bg-text/90 border border-light p-6 md:p-8 rounded-xl max-w-md md:max-w-4xl w-full text-zinc-100 shadow-2xl mx-4 md:grid md:grid-cols-12 md:gap-6">
+    
+    <div class="hidden md:flex md:col-span-5 border-r border-white/10 pr-6 flex-col justify-between h-full">
+      <div>
+        <h3 class="text-lg font-bold uppercase tracking-wider text-light mb-4">Review Items</h3>
+        <div id="review-items-list" class="space-y-3 overflow-y-auto max-h-[350px] pr-2 custom-scrollbar"></div>
+      </div>
+      
+      <div class="pt-4 border-t border-white/10 mt-4">
+        <div class="flex justify-between items-center text-sm text-gray-400">
+          <span>Amount To Pay:</span>
+          <span id="review-summary-total" class="font-black text-orange-400 text-lg">₱0.00</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="md:col-span-7 flex flex-col justify-between">
+      <div class="flex flex-row items-center gap-2 mb-4 border-b border-white/10 pb-3"> 
+        <i class="fa-solid fa-clipboard-check text-xl text-light"></i>
+        <h2 class="text-2xl font-bold uppercase tracking-wide text-white">Final Confirmation</h2>
+      </div>
+
+      <p class="text-xs text-gray-400 mb-4 font-sans">Identity verified! Please do a final check of your delivery and transaction information before confirming your purchase.</p>
+
+      <div class="space-y-3.5 bg-zinc-900/80 p-4 rounded-lg border border-light/20 text-left text-sm mb-5">
+        <div>
+          <span class="text-[10px] text-gray-500 uppercase font-bold block tracking-wider">Recipient Name</span>
+          <p id="review-name" class="font-semibold text-white tracking-wide"></p>
+        </div>
+        <div>
+          <span class="text-[10px] text-gray-500 uppercase font-bold block tracking-wider">Shipping Address</span>
+          <p id="review-address" class="font-medium text-gray-300 break-words leading-relaxed"></p>
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <span class="text-[10px] text-gray-500 uppercase font-bold block tracking-wider">Contact Number</span>
+            <p id="review-phone" class="font-medium text-gray-300"></p>
+          </div>
+          <div>
+            <span class="text-[10px] text-gray-500 uppercase font-bold block tracking-wider">Email Address</span>
+            <p id="review-email" class="font-medium text-gray-300 truncate"></p>
+          </div>
+        </div>
+        <div>
+          <span class="text-[10px] text-gray-500 uppercase font-bold block tracking-wider">Verified Payment Source</span>
+          <p id="review-payment" class="font-bold text-light uppercase text-xs tracking-wide"></p>
+        </div>
+        
+        <div class="pt-2 border-t border-white/10 flex justify-between items-center md:hidden">
+          <span class="text-xs text-gray-400 font-bold uppercase">Total Amount:</span>
+          <span id="review-mobile-total" class="text-base font-black text-orange-400">₱0.00</span>
+        </div>
+      </div>
+
+      <div class="flex gap-3 pt-2">
+        <button type="button" onclick="cancelTransaction()" class="w-1/2 bg-zinc-900 border border-zinc-800 hover:bg-zinc-800 text-xs font-semibold py-3 rounded transition hover:cursor-pointer uppercase tracking-wider text-gray-400">
+          Cancel Order
+        </button>
+        <button type="button" id="proceed-to-otp-btn" class="w-1/2 bg-red-600 hover:bg-red-700 text-xs font-black py-3 rounded transition hover:cursor-pointer uppercase tracking-widest text-white shadow-lg">
+          Confirm & Pay
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
   `;
 
   const bankSelect = document.querySelector('#cust-bank');
@@ -439,17 +510,92 @@ function setupVerificationFlow() {
     if (userEnteredOTP === currentSimulatedOTP) {
       verificationModal.classList.add('hidden');
 
-      // Mag-ge-generate ng random Reference Number para sa tagumpay na order
-      const refNumber = "REF-" + Math.floor(10000000 + Math.random() * 90000000);
-      const customerName = document.querySelector('#cust-name').value;
+    //KUKUNIN NATIN TO MAMAY SA FINAL REVIEW
+      const selectedBank = document.querySelector('#cust-bank').value;
+      const selectedRadio = document.querySelector('.payment-radio:checked');
 
-      showToast(`Thank you, ${customerName}! Successfully ordered. Ref: ${refNumber}`, "success")
+      // BUKASAN NA ANG FINAL CHECK DETAILS FORM
+      openFinalCheckFlow(selectedBank, selectedRadio);
 
     } else {
       showToast("Invalid OTP Code! Please check the message and try again.", "error");
     }
   };
 }
+
+window.openFinalCheckFlow = function(bank, radio) {
+  const finalCheckModal = document.querySelector('#final-check-modal');
+  
+  // 1. Kunin ang input details ng customer
+  const name = document.querySelector('#cust-name').value;
+  const address = document.querySelector('#cust-address').value;
+  const phone = document.querySelector('#cust-phone').value;
+  const email = document.querySelector('#cust-email').value;
+  const totalPrice = document.querySelector('#cart-total-price').innerText;
+
+  let paymentMethod = "";
+  if (bank !== "") {
+    paymentMethod = `🏦 Bank Transfer (${bank})`;
+  } else if (radio) {
+    paymentMethod = `📱 Digital Wallet (${radio.value})`;
+  }
+
+  // 2. I-inject ang data sa info details block
+  document.querySelector('#review-name').innerText = name;
+  document.querySelector('#review-address').innerText = address;
+  document.querySelector('#review-phone').innerText = `+63 ${phone}`;
+  document.querySelector('#review-email').innerText = email;
+  document.querySelector('#review-payment').innerText = paymentMethod;
+  
+  // I-inject ang presyo sa magkabilang responsive price elements
+  document.querySelector('#review-summary-total').innerText = totalPrice;
+  document.querySelector('#review-mobile-total').innerText = totalPrice;
+
+  // 3. DYNAMIC ITEM GENERATION: Kunin ang mga binili mula sa cart para i-render sa listahan
+  const savedCart = JSON.parse(localStorage.getItem('pc_grid_cart')) || [];
+  const reviewItemsList = document.querySelector('#review-items-list');
+
+  if (reviewItemsList) {
+    if (savedCart.length > 0) {
+      reviewItemsList.innerHTML = savedCart.map(item => `
+        <div class="flex items-center gap-3 p-2.5 bg-zinc-900/50 rounded-lg border border-white/5">
+          <img src="${item.productImage}" class="w-10 h-10 object-contain bg-white rounded p-1 flex-shrink-0">
+          <div class="flex-1 min-w-0">
+            <h4 class="font-bold text-white uppercase text-[10px] truncate leading-tight">${item.brand} ${item.model}</h4>
+            <div class="flex justify-between items-center mt-1">
+              <p class="text-orange-400 font-semibold text-[10px]">${item.price}</p>
+              <p class="text-[9px] text-gray-400 font-medium bg-zinc-800 px-1.5 py-0.5 rounded">Qty: ${item.quantity}</p>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    } else {
+      reviewItemsList.innerHTML = `<p class="text-xs text-gray-500 text-center py-4">No items found.</p>`;
+    }
+  }
+
+  // 4. Ipakita na ang magarbong modal screen natin
+  finalCheckModal.classList.remove('hidden');
+
+  // 5. Setup ang Confirmation Button Trigger
+  const confirmBtn = document.querySelector('#proceed-to-otp-btn');
+  confirmBtn.onclick = () => {
+    // Para sa ngayon, itatago lang muna natin ang modal para malinis tingnan habang hindi pa natin ginagalaw ang receipt.
+    finalCheckModal.classList.add('hidden');
+    
+     // Mag-ge-generate ng random Reference Number para sa tagumpay na order
+     const refNumber = "REF-" + Math.floor(10000000 + Math.random() * 90000000);
+     const customerName = document.querySelector('#cust-name').value;
+
+     showToast(`Order Confirmed, Thank you!, ${customerName}! Successfully ordered. Ref: ${refNumber}`, "success")
+  };
+};
+
+// Cancel operation handler sakaling magbago ang isip sa dulo
+window.cancelTransaction = function() {
+  document.querySelector('#final-check-modal').classList.add('hidden');
+  showToast("Transaction cancelled by the user.", "error");
+};
 
 
 // FIXED #2: Dynamic Toast Handler Module supporting multiple design states
