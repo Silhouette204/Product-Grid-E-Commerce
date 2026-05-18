@@ -275,15 +275,3 @@ if(document.getElementById("product-highlights-container")){
 
 });
 
-
-// Halimbawa ng pag-handle sa main JS file mo pagkatapos i-render ang UI:
-document.body.addEventListener('submit', (e) => {
-  if (e.target && e.target.id === 'checkout-form') {
-    e.preventDefault(); // Harangan ang page reload
-    
-    // Dito mo ilalagay ang logic tulad ng pag-clear ng cart
-    // o pagpapakita ng Success Toast/Modal!
-    alert('Order simulated successfully!'); 
-    window.closeCheckoutFlow();
-  }
-});

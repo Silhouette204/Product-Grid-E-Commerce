@@ -37,6 +37,10 @@ export function renderCartUI() {
       </div>
     </div>
 
+
+
+
+
     <div id="checkout-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-70 hidden">
       <div class="bg-text/90 border border-primary/80 p-6 md:p-8 rounded-xl max-w-md md:max-w-4xl w-full text-zinc-100 shadow-2xl mx-4 md:grid md:grid-cols-12 md:gap-6">
         
@@ -62,38 +66,40 @@ export function renderCartUI() {
             </a>
           </div>
 
-          <form id="checkout-form" class="space-y-4">
-            <div>
-              <label class="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-1">Full Name</label>
-              <input type="text" id="cust-name" required class="w-full bg-zinc-900 border border-zinc-800 rounded p-2 text-sm focus:outline-none focus:border-red-600 text-white">
-            </div>
-            <div>
-              <label class="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-1">Delivery Address</label>
-              <input type="text" id="cust-address" required class="w-full bg-zinc-900 border border-zinc-800 rounded p-2 text-sm focus:outline-none focus:border-red-600 text-white">
-            </div>
-            <div class="grid grid-cols-2 gap-3">
-              <div>
-                <label class="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-1">Contact No.</label>
-                <input type="tel" id="cust-phone" required class="w-full bg-zinc-900 border border-zinc-800 rounded p-2 text-sm focus:outline-none focus:border-red-600 text-white">
-              </div>
-              <div>
-                <label class="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-1">Email Address</label>
-                <input type="email" id="cust-email" required class="w-full bg-zinc-900 border border-zinc-800 rounded p-2 text-sm focus:outline-none focus:border-red-600 text-white">
-              </div>
-            </div>
-         
-            <div>
-              <label class="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-1">Select Bank Account</label>
-              <select id="cust-bank" class="w-full bg-zinc-900 border border-zinc-800 rounded p-2.5 text-sm focus:outline-none focus:border-red-600 text-white cursor-pointer appearance-none">
-                <option value="" disabled selected hidden>Choose your bank...</option>
-                <option value="BDO" class="bg-zinc-900">BDO (Banco de Oro)</option>
-                <option value="Metrobank" class="bg-zinc-900">Metrobank</option>
-                <option value="ChinaBank" class="bg-zinc-900">ChinaBank</option>
-                <option value="BPO" class="bg-zinc-900">BPO Bank</option>
-                <option value="BPI" class="bg-zinc-900">BPI (Bank of the Philippine Islands)</option>
-              </select>
-            </div>
 
+          
+
+         <form id="checkout-form" class="space-y-4">
+  <div>
+    <label class="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-1">Full Name</label>
+    <input type="text" id="cust-name" required class="w-full bg-zinc-900 border border-zinc-800 rounded p-2 text-sm focus:outline-none hover:border-light focus:border-light transition text-white">
+  </div>
+  <div>
+    <label class="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-1">Delivery Address</label>
+    <input type="text" id="cust-address" required class="w-full bg-zinc-900 border border-zinc-800 rounded p-2 text-sm focus:outline-none hover:border-light focus:border-light transition text-white">
+  </div>
+  <div class="grid grid-cols-2 gap-3">
+    <div>
+      <label class="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-1">Contact No.</label>
+      <input type="tel" id="cust-phone" required class="w-full bg-zinc-900 border border-zinc-800 rounded p-2 text-sm focus:outline-none hover:border-light focus:border-light transition text-white">
+    </div>
+    <div>
+      <label class="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-1">Email Address</label>
+      <input type="email" id="cust-email" required class="w-full bg-zinc-900 border border-zinc-800 rounded p-2 text-sm focus:outline-none hover:border-light focus:border-light transition text-white">
+    </div>
+  </div>
+
+  <div>
+    <label class="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-1">Select Bank Account</label>
+    <select id="cust-bank" class="w-full bg-zinc-900 border border-zinc-800 rounded p-2.5 text-sm focus:outline-none hover:border-light focus:border-light transition text-white cursor-pointer appearance-none">
+      <option value="" disabled selected hidden>Choose your bank...</option>
+      <option value="BDO" class="bg-zinc-900">BDO (Banco de Oro)</option>
+      <option value="Metrobank" class="bg-zinc-900">Metrobank</option>
+      <option value="ChinaBank" class="bg-zinc-900">ChinaBank</option>
+      <option value="BPO" class="bg-zinc-900">BPO Bank</option>
+      <option value="BPI" class="bg-zinc-900">BPI (Bank of the Philippine Islands)</option>
+    </select>
+  </div>
             <div>  
               <label class="block text-xs font-semibold uppercase tracking-wider text-gray-400 text-center my-1 font-bold">— OR —</label>
             </div>
@@ -148,10 +154,36 @@ export function renderCartUI() {
       </div>
     </div>
 
-    <div id="toast-notification" class="fixed top-5 left-1/2 -translate-x-1/2 bg-red-800 text-white px-6 py-3 rounded-lg shadow-2xl font-semibold text-sm z-80 flex items-center gap-3 transition-all duration-300 opacity-0 pointer-events-none transform -translate-y-4">
+    <div id="toast-notification" class="fixed top-5 left-1/2 -translate-x-1/2 bg-red-800 text-white px-6 py-3 rounded-lg shadow-2xl font-semibold text-sm z-90 flex items-center gap-3 transition-all duration-300 opacity-0 pointer-events-none transform -translate-y-4">
       <i class="fa-solid fa-triangle-exclamation text-lg"></i>
       <span id="toast-message">Your cart is empty!</span>
     </div>
+
+    <div id="verification-modal" class="fixed inset-0 bg-black/85 backdrop-blur-md flex items-center justify-center z-80 hidden">
+      <div class="bg-zinc-950 border border-zinc-800 p-6 rounded-xl max-w-sm w-full text-center shadow-2xl mx-4">
+        <i class="fa-solid fa-shield-halved text-4xl text-primary mb-3"></i>
+        <h3 class="text-xl font-bold uppercase tracking-wide text-white">Security Verification</h3>
+        <p class="text-xs text-gray-400 mt-1 mb-4">Choose where to send your Security Verification Code (OTP):</p>
+        
+        <div class="grid grid-cols-2 gap-3 mb-5">
+          <button id="verify-via-sms" class="p-3 bg-zinc-900 border border-zinc-800 hover:border-blue-600 rounded-lg flex flex-col items-center gap-1.5 group transition">
+            <i class="fa-solid fa-comment-sms text-lg text-gray-500 group-hover:text-blue-400"></i>
+            <span class="text-xs font-semibold text-gray-300">Via SMS</span>
+          </button>
+          <button id="verify-via-email" class="p-3 bg-zinc-900 border border-zinc-800 hover:border-green-600 rounded-lg flex flex-col items-center gap-1.5 group transition">
+            <i class="fa-solid fa-envelope text-lg text-gray-500 group-hover:text-green-400"></i>
+            <span class="text-xs font-semibold text-gray-300">Via Email</span>
+          </button>
+        </div>
+
+        <div id="otp-input-wrapper" class="hidden space-y-3">
+          <p id="otp-sent-message" class="text-[11px] text-orange-400 font-medium"></p>
+          <input type="text" id="otp-code" maxlength="6" placeholder="Enter 6-Digit OTP (Simulated: 123456)" class="w-full bg-zinc-900 border border-zinc-800 rounded p-2 text-center text-base tracking-widest font-mono text-white focus:outline-none focus:border-red-600">
+          <button id="confirm-otp-btn" class="w-full bg-red-600 hover:bg-red-700 font-bold py-2 rounded text-sm uppercase transition">Verify & Proceed</button>
+        </div>
+      </div>
+    </div>
+
   `;
 
   const bankSelect = document.querySelector('#cust-bank');
@@ -175,8 +207,21 @@ export function renderCartUI() {
 
         radioButtons.forEach(radio => {
           radio.checked = false;
-          radio.parentElement.classList.remove('border-blue-600', 'border-green-600', 'border-primary', 'bg-zinc-800');
-          radio.parentElement.classList.add('border-zinc-800', 'bg-zinc-900');
+          const parent = radio.parentElement;
+          
+          // Alisin ang active e-wallet designs kapag bumalik si user sa bank option
+          parent.classList.remove(
+            'border-blue-600', 'bg-blue-600/10', 'text-blue-400',
+            'border-green-600', 'bg-green-600/10', 'text-green-400',
+            'border-primary', 'bg-primary/10', 'text-primary'
+          );
+          parent.classList.add('border-zinc-800', 'bg-zinc-900');
+          
+          const labelSpan = parent.querySelector('span');
+          if (labelSpan) {
+            labelSpan.classList.remove('text-blue-400', 'text-green-400', 'text-primary');
+            labelSpan.classList.add('text-gray-400');
+          }
         });
       }
     });
@@ -192,22 +237,78 @@ export function renderCartUI() {
         cardInput.value = "";
 
         mobileWrapper.classList.remove('hidden');
-        mobileInput.setAttribute('required', 'true');
-        
+        mobileInput.setAttribute('required', 'true');    
         mobileLabel.innerText = `${this.value} Mobile Number`;
 
         radioButtons.forEach(r => {
-          r.parentElement.classList.remove('border-blue-600', 'border-green-600', 'border-primary', 'bg-zinc-800');
-          r.parentElement.classList.add('border-zinc-800', 'bg-zinc-900');
-        });
+          const parent = r.parentElement;
+          // Alisin ang lahat ng posibleng active active borders/backgrounds
+          parent.classList.remove(
+            'border-blue-600', 'bg-blue-600/10', 'text-blue-400',
+            'border-green-600', 'bg-green-600/10', 'text-green-400',
+            'border-primary', 'bg-primary/10', 'text-primary'
+          );
 
-        if (this.value === 'GCash') this.parentElement.classList.add('border-blue-600', 'bg-zinc-800');
-        if (this.value === 'PayMaya') this.parentElement.classList.add('border-green-600', 'bg-zinc-800');
-        if (this.value === 'PayPal') this.parentElement.classList.add('border-primary', 'bg-zinc-800');
+          parent.classList.add('border-zinc-800', 'bg-zinc-900');
+
+          const labelSpan = parent.querySelector('span');
+          if (labelSpan) {
+            labelSpan.classList.remove('text-blue-400', 'text-green-400', 'text-primary');
+            labelSpan.classList.add('text-gray-400');
+          }
+  });
+
+  //mag stay ang border base sa pipindutin ni user
+  const currentParent = this.parentElement;
+        const currentSpan = currentParent.querySelector('span');
+
+        currentParent.classList.remove('border-zinc-800', 'bg-zinc-900');
+
+        if (this.value === 'GCash') {
+          currentParent.classList.add('border-blue-600', 'bg-blue-600/10');
+          if (currentSpan) {
+            currentSpan.classList.remove('text-gray-400');
+            currentSpan.classList.add('text-blue-400');
+          }
+        }
+        else if (this.value === 'PayMaya') {
+          currentParent.classList.add('border-green-600', 'bg-green-600/10');
+          if (currentSpan) {
+            currentSpan.classList.remove('text-gray-400');
+            currentSpan.classList.add('text-green-400');
+          }
+        }
+        else if (this.value === 'PayPal') {
+          currentParent.classList.add('border-primary', 'bg-primary/10');
+          if (currentSpan) {
+            currentSpan.classList.remove('text-gray-400');
+            currentSpan.classList.add('text-primary');
+          }
+        }
       }
     });
-  });
+  })
+
+  const checkoutForm = document.querySelector('#checkout-form');
+  if (checkoutForm) {
+    checkoutForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+
+    const selectedBank = document.querySelector('#cust-bank').value;
+    const selectedRadio = document.querySelector('.payment-radio:checked');
+
+    if (selectedBank === "" && !selectedRadio) {
+      showToast("Please select a Bank Account or a Digital E-Wallet to proceed.", "error");
+      return; // Ihinto ang form submission, huwag munang magpapakita ng OTP
+    }
+
+      // Isara ang Checkout form modal, tapos buksan ang Verification Gateway
+      document.querySelector('#checkout-modal').classList.add('hidden');
+      setupVerificationFlow();
+    });
+  }
 }
+
 
 window.toggleCart = function() {
   const cart = document.querySelector('#shopping-cart');
@@ -264,16 +365,15 @@ window.openCheckoutFlow = function() {
 };
 
 window.closeCheckoutFlow = function() {
-  document.querySelector('#checkout-modal').classList.add('hidden');
-  
-  // OPTIONAL ENHANCEMENT: Reset ang form state pagka-close para malinis ulit ang indicators
+  document.querySelector('#checkout-modal').classList.add('hidden');  
   const form = document.querySelector('#checkout-form');
-  if(form) {
+
+  if (form) {
     form.reset();
     document.querySelector('#cust-mobile-wallet-wrapper').classList.add('hidden');
     document.querySelector('#card-number-wrapper').classList.add('hidden');
     document.querySelector('#cust-mobile-wallet').removeAttribute('required');
-    document.querySelector('#cust-card').removeAttribute('removeAttribute');
+    document.querySelector('#cust-card').removeAttribute('required'); // FIXED #1 TYPO
     document.querySelectorAll('.payment-radio').forEach(r => {
       r.parentElement.classList.remove('border-blue-600', 'border-green-600', 'border-primary', 'bg-zinc-800');
       r.parentElement.classList.add('border-zinc-800', 'bg-zinc-900');
@@ -281,12 +381,97 @@ window.closeCheckoutFlow = function() {
   }
 };
 
-function showToast(message) {
+// Internal Handler: Verification Gateway Management Setup
+// Sample code verification, wala pa tong send code through SMS and Email dahil kailgangan ng hosting at API
+
+// global variable para may hawak sa generated OTP para sa simulation session
+let currentSimulatedOTP = "";
+
+function setupVerificationFlow() {
+  const verificationModal = document.querySelector('#verification-modal');
+  const smsBtn = document.querySelector('#verify-via-sms');
+  const emailBtn = document.querySelector('#verify-via-email');
+  const inputWrapper = document.querySelector('#otp-input-wrapper');
+  const sentMsg = document.querySelector('#otp-sent-message');
+  const confirmBtn = document.querySelector('#confirm-otp-btn');
+  const otpInput = document.querySelector('#otp-code');
+
+  verificationModal.classList.remove('hidden');
+  inputWrapper.classList.add('hidden');
+  otpInput.value = "";
+  currentSimulatedOTP = ""; // Clear previous OTP
+
+  //Ganito mag generate ng number
+  const generateOTP = () => {
+    return Math.floor(100000 + Math.random() * 900000).toString();
+  };
+
+  smsBtn.onclick = () => {
+    const phone = document.querySelector('#cust-phone').value;
+    currentSimulatedOTP = generateOTP();
+
+    sentMsg.innerText = `OTP code sent to mobile number: +63 ${phone}`;
+    inputWrapper.classList.remove('hidden');
+
+    showToast(`[SIMULATION] SMS Received: Your OTP is ${currentSimulatedOTP}`, "success");
+  };
+
+  //GANITO NAMAN PAG EMAIL SENDING OTP
+  emailBtn.onclick = () => {
+    const email = document.querySelector('#cust-email').value;
+    currentSimulatedOTP = generateOTP();
+
+    sentMsg.innerText = `OTP security token sent to email: ${email}`;
+    inputWrapper.classList.remove('hidden');
+
+    showToast(`Email Sent: Your OTP is ${currentSimulatedOTP}`, "success");
+  };
+
+  confirmBtn.onclick = () => {
+
+    const userEnteredOTP = otpInput.value.trim();
+
+    if (userEnteredOTP === "") {
+      showToast("Please enter the 6-digit OTP code.", "error");
+      return;
+    }
+
+    if (userEnteredOTP === currentSimulatedOTP) {
+      verificationModal.classList.add('hidden');
+
+      // Mag-ge-generate ng random Reference Number para sa tagumpay na order
+      const refNumber = "REF-" + Math.floor(10000000 + Math.random() * 90000000);
+      const customerName = document.querySelector('#cust-name').value;
+
+      showToast(`Thank you, ${customerName}! Successfully ordered. Ref: ${refNumber}`, "success")
+
+    } else {
+      showToast("Invalid OTP Code! Please check the message and try again.", "error");
+    }
+  };
+}
+
+
+// FIXED #2: Dynamic Toast Handler Module supporting multiple design states
+function showToast(message, type = "error") {
   const toast = document.querySelector('#toast-notification');
   const toastMsg = document.querySelector('#toast-message');
+  const toastIcon = toast ? toast.querySelector('i') : null;
   if (!toast || !toastMsg) return;
 
   toastMsg.innerText = message;  
+  
+  // Magpalit ng kulay at icon base sa uri ng feedback state
+  if (type === "success") {
+    toast.classList.remove('bg-red-800');
+    toast.classList.add('bg-green-700');
+    if (toastIcon) toastIcon.className = "fa-solid fa-circle-check text-lg";
+  } else {
+    toast.classList.remove('bg-green-700');
+    toast.classList.add('bg-red-800');
+    if (toastIcon) toastIcon.className = "fa-solid fa-triangle-exclamation text-lg";
+  }
+  
   toast.classList.remove('opacity-0', 'pointer-events-none', '-translate-y-4');
   toast.classList.add('opacity-100', 'translate-y-0');
   
