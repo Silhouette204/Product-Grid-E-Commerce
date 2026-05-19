@@ -759,22 +759,88 @@ function showToast(message, type = "error") {
   }, 4000);
 }
 
+// =========================================================================
+// ORDER HISTORY ARCHIVE ENGINE & RESET LOOP
+// =========================================================================
+
+function appendToOrderHistory() {
+  try {
+    // 1. Kunin ang active checkout details mula sa inputs
+    const customerName = document.querySelector('#cust-name')?.value || 'Guest User';
+    const address = document.querySelector('#cust-address')?.value || 'No Address Provided';
+    
+    // 2. Kunin ang mga text values mula sa resibo na binuo natin kagabi
+    const referenceNo = document.querySelector('#receipt-ref')?.innerText || 'REF-UNKNOWN';
+    const subtotal = document.querySelector('#receipt-subtotal')?.innerText || '₱0.00';
+    const tax = document.querySelector('#receipt-tax')?.innerText || '₱0.00';
+    const totalAmount = document.querySelector('#receipt-total')?.innerText || '₱0.00';
+    const txnNo = document.querySelector('#receipt-txn-num')?.innerText || 'TXN-UNKNOWN';
+    const invoiceNo = document.querySelector('#receipt-invoice-num')?.innerText || 'SI-UNKNOWN';
+
+    // FIX: Gagamitin natin ang 'cart' variable mo na active sa file na ito, hindi 'savedCart'
+    let activeCart = [];
+    if (typeof cart !== 'undefined') {
+      activeCart = cart;
+    } else {
+      activeCart = JSON.parse(localStorage.getItem('pc_grid_cart')) || [];
+    }
+
+    // Siguraduhing may laman ang cart bago mag-map para maiwasan ang crash
+    const orderItemsSummary = activeCart.length > 0 
+      ? activeCart.map(item => `${item.brand || ''} ${item.model || 'Item'} (x${item.quantity || 1})`).join(', ')
+      : 'Computer Components Bundle Set';
+
+    // 3. Gumawa ng Single Order Object Entry para sa rendering ng order-history-list.js
+    const newOrderLog = {
+      invoiceNo: invoiceNo,
+      date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }), // Lalabas na e.g. "May 20, 2026"
+      itemsSummary: orderItemsSummary,
+      items: activeCart, 
+      referenceNo: referenceNo,
+      customerName: customerName,
+      address: address,
+      subtotal: subtotal,
+      tax: tax,
+      totalAmount: totalAmount,
+      txnNo: txnNo
+    };
+
+    // 4. Kumuha ng database array mula sa storage at isalpak ang bago sa unahan (LATEST FIRST)
+    let orderHistory = JSON.parse(localStorage.getItem('computer_grid_orders')) || [];
+    orderHistory.unshift(newOrderLog);
+    
+    localStorage.setItem('computer_grid_orders', JSON.stringify(orderHistory));
+    console.log("Order successfully archived to history!");
+
+  } catch (error) {
+    console.error("Error archiving order to history, bypassing to avoid system crash:", error);
+  }
+}
+
+// ITO LANG DAPAT ANG NAG-IISANG window.closeAllAndReset SA DULO NG FILE MO
 window.closeAllAndReset = function() {
-  // 1. Siguraduhing nakatago ang receipt modal bago mag-navigate
+  // Patakbuhin ang ligtas na archiving function
+  appendToOrderHistory();
+
+  // Itago ang receipt modal wrapper
   const receiptModal = document.querySelector('#receipt-modal');
   if (receiptModal) {
     receiptModal.classList.add('hidden');
   }
-  
-  // 2. BURAHIN ANG DATA SA LOCAL STORAGE (Para zero out ang cart list mo)
+
+  // Burahin ang active cart session para mag-zero out ang cart icon count badge
   localStorage.removeItem('pc_grid_cart');
   
-  // 3. I-reset ang checkout form values para malinis ang inputs sa susunod na transaksyon
+  // Linisin ang input values ng form
   const form = document.querySelector('#checkout-form');
   if (form) form.reset();
 
-  // 4. REDIRECTION TO MAIN PAGE:
-  // Kung gusto mong bumalik sa main landing page/home catalog mo, palitan ang '/' ng 'index.html' depende sa file structure mo.
-  // Gagamit tayo ng window.location.href para siguradong fresh reload ang salubong sa main page.
-  window.location.href = './index.html'; 
+  // I-refresh at i-update ang local cart array state sa ui
+  if (typeof cart !== 'undefined') {
+    cart = [];
+    if (typeof updateCartUI === 'function') updateCartUI();
+  }
+
+  // Redirection: Ililipad natin sila sa order.html para makita ang bagong table record grid!
+  window.location.href = 'order.html';
 };

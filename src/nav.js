@@ -56,6 +56,8 @@ export function renderNavigation(){
        <li class="link-nav"><i class="fa-solid fa-truck-fast mx-2"></i><a href="/product.html">Products</a></li>
               
        <li class="link-nav"><i class="fa-solid fa-address-card mx-2"></i><a href="">Contact</a></li>
+
+       <li class="link-nav"><i class="fa-solid fa-clipboard-list text-2xl mx-3"></i><a href="/order.html">My Order</a></li>
     </ul>
 
 
