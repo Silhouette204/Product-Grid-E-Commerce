@@ -28,47 +28,73 @@ function renderOrdersTable() {
   }
 
   // CORE RENDER LOOP: Isa-isahing ilapat ang records papuntang Structural Columns
-  tableBody.innerHTML = orders.map((order, index) => {
-    
-    // Fallback display formatting kung sakaling array or string ang structure ng items block mo
-    let itemsHtmlBlock = '';
-    if (Array.isArray(order.items)) {
-      itemsHtmlBlock = order.items.map(item => `
-        <div class="flex justify-between items-center bg-zinc-900/30 p-2 rounded border border-zinc-800/40 text-xs">
-          <span class="text-zinc-200 font-bold uppercase">${item.brand} ${item.model}</span>
-          <span class="text-zinc-500 font-mono">Qty: ${item.quantity}</span>
-        </div>
-      `).join('');
-    } else {
-      // String backup template description
-      itemsHtmlBlock = `<span class="text-zinc-300 font-medium">${order.itemsSummary || 'Computer Components Bundle Set'}</span>`;
-    }
+tableBody.innerHTML = orders.map((order, index) => {
+  let itemsHtmlBlock = '';
+  if (Array.isArray(order.items)) {
+    itemsHtmlBlock = order.items.map(item => `
+      <div class="flex justify-between items-center bg-zinc-100 p-2 rounded border border-zinc-200 text-xs text-zinc-900">
+        <span class="font-bold uppercase">${item.brand} ${item.model}</span>
+        <span class="font-mono font-bold text-zinc-600">Qty: ${item.quantity}</span>
+      </div>
+    `).join('');
+  } else {
+    itemsHtmlBlock = `<span class="text-zinc-900 font-semibold">${order.itemsSummary || 'Computer Components Bundle Set'}</span>`;
+  }
 
-    return `
-      <tr class="bg-primary transition duration-150">
-        <td class="p-4 align-top space-y-2">
-          <div class="flex items-center gap-2 mb-1.5">
-            <span class="text-[10px] bg-zinc-800 text-zinc-400 px-2 py-0.5 rounded uppercase font-mono font-bold">${order.invoiceNo || 'SI-SYSTEM'}</span>
-            <span class="text-[11px] text-zinc-500 font-mono">${order.date || 'May 19, 2026'}</span>
-          </div>
-          <div class="space-y-1 max-w-md">
-            ${itemsHtmlBlock}
-          </div>
-        </td>
-        
-        <td class="p-4 align-middle font-mono text-xs text-orange-400 font-bold tracking-wide">
-          ${order.referenceNo || 'REF-EMPTY-FIELD'}
-        </td>
-        
-        <td class="p-4 align-middle text-center">
-          <button type="button" onclick="viewSpecificReceipt(${index})" class="inline-flex items-center gap-2 bg-zinc-800 text-zinc-100 font-semibold px-4 py-2 rounded-lg text-xs uppercase tracking-wider transition hover:bg-orange-400 hover:text-zinc-950 shadow-md cursor-pointer font-mono">
-            <i class="fa-solid fa-receipt"></i> View
+  return `
+    <tr class="bg-primary hover:bg-zinc-50 transition duration-150 border-b border-zinc-200 text-zinc-900">
+      <td class="p-4 align-top space-y-2">
+        <div class="flex items-center gap-2 mb-1.5">
+          <span class="text-[10px] bg-zinc-800 text-white px-2 py-0.5 rounded uppercase font-mono font-bold">${order.invoiceNo || 'SI-SYSTEM'}</span>
+          <span class="text-[11px] text-zinc-500 font-mono font-semibold">${order.date || 'May 19, 2026'}</span>
+        </div>
+        <div class="space-y-1 max-w-md">
+          ${itemsHtmlBlock}
+        </div>
+      </td>
+      
+      <td class="p-4 align-middle font-mono text-sm text-orange-600 font-black tracking-wide">
+        ${order.referenceNo || 'REF-EMPTY-FIELD'}
+      </td>
+      
+      <td class="p-4 align-middle text-center relative">
+        <div class="inline-block text-left relative dropdown-container">
+          <button type="button" onclick="toggleDropdown(event, ${index})" class="inline-flex items-center gap-2 bg-zinc-900 text-white font-bold px-4 py-2 rounded-lg text-xs uppercase tracking-wider transition hover:bg-zinc-700 shadow-md cursor-pointer font-mono">
+            Actions <i class="fa-solid fa-chevron-down text-[10px]"></i>
           </button>
-        </td>
-      </tr>
-    `;
-  }).join('');
-}
+          
+          <div id="dropdown-${index}" class="hidden absolute right-0 mt-2 w-40 bg-zinc-950 border border-zinc-800 rounded-xl shadow-2xl z-50 py-1.5 font-sans">
+            <button type="button" onclick="viewSpecificReceipt(${index})" class="w-full text-left px-4 py-2 text-xs text-zinc-200 hover:bg-zinc-800 font-semibold transition flex items-center gap-2 cursor-pointer">
+              <i class="fa-solid fa-receipt text-orange-400"></i> View Receipt
+            </button>
+            <button type="button" onclick="archiveOrder(${index})" class="w-full text-left px-4 py-2 text-xs text-zinc-200 hover:bg-zinc-800 font-semibold transition flex items-center gap-2 cursor-pointer border-t border-zinc-900">
+              <i class="fa-solid fa-box-archive text-zinc-400"></i> Get Archive
+            </button>
+          </div>
+        </div>
+      </td>
+    </tr>
+  `;
+}).join('');
+
+
+
+window.toggleDropdown = function(event, index) {
+  event.stopPropagation();
+  // Isara muna ang lahat ng bukas na dropdowns
+  document.querySelectorAll('[id^="dropdown-"]').forEach(el => {
+    if (el.id !== `dropdown-${index}`) el.classList.add('hidden');
+  });
+  // Buksan o isara ang pinindot
+  const currentDropdown = document.querySelector(`#dropdown-${index}`);
+  currentDropdown.classList.toggle('hidden');
+};
+
+// ISARA ANG DROPDOWN KAPAG NAG-CLICK SA LABAS
+document.addEventListener('click', () => {
+  document.querySelectorAll('[id^="dropdown-"]').forEach(el => el.classList.add('hidden'));
+});
+
 
 // VIEW CONTROLLER ENGINE TRIGGER
 window.viewSpecificReceipt = function(index) {
@@ -126,3 +152,26 @@ window.viewSpecificReceipt = function(index) {
 window.closeHistoryReceipt = function() {
   document.querySelector('#history-receipt-modal').classList.add('hidden');
 };
+
+
+
+
+//archive function 
+window.archiveOrder = function(index) {
+  let orders = JSON.parse(localStorage.getItem('computer_grid_orders')) || [];
+  let archivedOrders = JSON.parse(localStorage.getItem('computer_grid_archived')) || [];
+  
+  // 1. Hugutin ang order item gamit ang index at tanggalin sa active table array
+  const itemToArchive = orders.splice(index, 1)[0];
+  
+  // 2. Itapon ang nakuhang item papunta sa archive database area
+  archivedOrders.unshift(itemToArchive);
+  
+  // 3. I-update ang dalawang magkahiwalay na key sa storage environment
+  localStorage.setItem('computer_grid_orders', JSON.stringify(orders));
+  localStorage.setItem('computer_grid_archived', JSON.stringify(archivedOrders));
+  
+  // 4. Re-render para magbago agad ang listahan sa screen nang hindi nagre-reload ang page
+  renderOrdersTable();
+};
+}
