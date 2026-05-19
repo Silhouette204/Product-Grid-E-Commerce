@@ -63,9 +63,15 @@ function renderArchivedTable() {
               <button type="button" onclick="viewSpecificArchivedReceipt(${index})" class="w-full text-left px-4 py-2 text-xs text-zinc-200 hover:bg-zinc-800 font-semibold transition flex items-center gap-2 cursor-pointer">
                 <i class="fa-solid fa-receipt text-orange-400"></i> View Receipt
               </button>
+
+              <button type="button" onclick="restoreOrderToHistory(${index})" class="w-full text-left px-4 py-2 text-xs text-green-400 hover:bg-zinc-800 font-semibold transition flex items-center gap-2 cursor-pointer border-t border-zinc-900">
+                <i class="fa-solid fa-trash-arrow-up"></i> Restore Order
+              </button>
+
               <button type="button" onclick="deleteReceiptPermanently(${index})" class="w-full text-left px-4 py-2 text-xs text-red-600 hover:bg-zinc-800 font-semibold transition flex items-center gap-2 cursor-pointer border-t border-zinc-900">
                 <i class="fa-solid fa-trash-can"></i> Delete Receipt
               </button>
+              
             </div>
           </div>
         </td>
@@ -87,6 +93,58 @@ document.addEventListener('click', () => {
   document.querySelectorAll('[id^="archive-dropdown-"]').forEach(el => el.classList.add('hidden'));
 });
 
+
+//for toast conditions (succesfull green, orange restore, red delete)
+// REUSABLE TOAST NOTIFICATION ENGINE
+function showToast(message, type = 'success') {
+  const container = document.querySelector('#toast-container');
+  if (!container) return;
+
+  // Gumawa ng bagong div para sa toast card
+  const toast = document.createElement('div');
+  
+  // Timpla ng kulay base sa type (success, info, o error/danger)
+  let bgClass = 'bg-zinc-900 border-zinc-800 text-zinc-100';
+  let iconClass = 'fa-circle-info text-blue-400';
+  
+  if (type === 'success') {
+    bgClass = 'bg-zinc-950 border-green-500/30 text-green-400';
+    iconClass = 'fa-circle-check text-green-400';
+  } else if (type === 'danger') {
+    bgClass = 'bg-zinc-950 border-red-500/30 text-red-400';
+    iconClass = 'fa-triangle-exclamation text-red-400';
+  } else if (type === 'info') {
+    bgClass = 'bg-zinc-950 border-orange-500/30 text-orange-400';
+    iconClass = 'fa-clock-rotate-left text-orange-400';
+  }
+
+  // Bagong structure ng lumulutang na card na may Tailwind Animations at transition shadow
+  toast.className = `flex items-center gap-3 px-5 py-3.5 border rounded-xl shadow-2xl transition-all duration-300 ease-out transform translate-y-5 opacity-0 pointer-events-auto font-sans text-xs uppercase font-bold tracking-wider ${bgClass}`;
+  
+  toast.innerHTML = `
+    <i class="fa-solid ${iconClass} text-base"></i>
+    <span>${message}</span>
+  `;
+
+  // Isalpak sa container panel
+  container.appendChild(toast);
+
+  // Trigger smooth fade-in at pag-angat (Animation slide-up effect)
+  setTimeout(() => {
+    toast.classList.remove('translate-y-5', 'opacity-0');
+  }, 10);
+
+  // Awtomatikong mawawala pagkatapos ng 3 segundo (3000ms)
+  setTimeout(() => {
+    toast.classList.add('translate-y-5', 'opacity-0');
+    // Hintaying matapos ang transition bago tuluyang burahin sa DOM node tree
+    setTimeout(() => {
+      toast.remove();
+    }, 300);
+  }, 3000);
+}
+
+
 // CRITICAL ACTION: PERMANENTLY REMOVE FROM BROWSER DATABASE
 window.deleteReceiptPermanently = function(index) {
   if (confirm("Are you sure you want to permanently delete this receipt record? This action cannot be undone.")) {
@@ -98,6 +156,7 @@ window.deleteReceiptPermanently = function(index) {
     // Ibalik ang bawas na array sa localstorage
     localStorage.setItem('computer_grid_archived', JSON.stringify(archivedOrders));
     
+    showToast("Receipt record permanently destroyed from cache", "danger");
     // Re-render table layout
     renderArchivedTable();
   }
@@ -139,4 +198,33 @@ window.viewSpecificArchivedReceipt = function(index) {
 
 window.closeHistoryReceipt = function() {
   document.querySelector('#history-receipt-modal').classList.add('hidden');
+};
+
+
+
+//restore function 
+// RESTORE DATA ENGINE: Ibalik ang record mula Archive papuntang Active Orders
+window.restoreOrderToHistory = function(index) {
+  // 1. Kumuha ng kopya ng dalawang databases mula sa local storage cache
+  let archivedOrders = JSON.parse(localStorage.getItem('computer_grid_archived')) || [];
+  let activeOrders = JSON.parse(localStorage.getItem('computer_grid_orders')) || [];
+
+  // 2. Hugutin ang target item gamit ang index mula sa archive list (Tatanggalin sya dun)
+  const itemToRestore = archivedOrders.splice(index, 1)[0];
+
+  if (itemToRestore) {
+    // 3. I-push pabalik sa PINAKA-UNAHAN ng active orders array list
+    activeOrders.unshift(itemToRestore);
+
+    // 4. I-save ang pagbabago sa magkahiwalay na Storage Keys ng browser natin
+    localStorage.setItem('computer_grid_archived', JSON.stringify(archivedOrders));
+    localStorage.setItem('computer_grid_orders', JSON.stringify(activeOrders));
+
+    // 5. Mabilis na UI Notification (Optional pero maganda para alam ng user)
+
+    showToast("Order entry successfully restored to active logs", "info");
+    
+    // 6. Re-render ang Archive table para mawala agad ang ni-restore na row
+    renderArchivedTable();
+  }
 };

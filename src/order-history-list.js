@@ -76,7 +76,7 @@ tableBody.innerHTML = orders.map((order, index) => {
     </tr>
   `;
 }).join('');
-
+}
 
 
 window.toggleDropdown = function(event, index) {
@@ -155,6 +155,56 @@ window.closeHistoryReceipt = function() {
 
 
 
+// REUSABLE TOAST NOTIFICATION ENGINE
+function showToast(message, type = 'success') {
+  const container = document.querySelector('#toast-container');
+  if (!container) return;
+
+  // Gumawa ng bagong div para sa toast card
+  const toast = document.createElement('div');
+  
+  // Timpla ng kulay base sa type (success, info, o error/danger)
+  let bgClass = 'bg-zinc-900 border-zinc-800 text-zinc-100';
+  let iconClass = 'fa-circle-info text-blue-400';
+  
+  if (type === 'success') {
+    bgClass = 'bg-zinc-950 border-green-500/30 text-green-400';
+    iconClass = 'fa-circle-check text-green-400';
+  } else if (type === 'danger') {
+    bgClass = 'bg-zinc-950 border-red-500/30 text-red-400';
+    iconClass = 'fa-triangle-exclamation text-red-400';
+  } else if (type === 'info') {
+    bgClass = 'bg-zinc-950 border-orange-500/30 text-orange-400';
+    iconClass = 'fa-clock-rotate-left text-orange-400';
+  }
+
+  // Bagong structure ng lumulutang na card na may Tailwind Animations at transition shadow
+  toast.className = `flex items-center gap-3 px-5 py-3.5 border rounded-xl shadow-2xl transition-all duration-300 ease-out transform translate-y-5 opacity-0 pointer-events-auto font-sans text-xs uppercase font-bold tracking-wider ${bgClass}`;
+  
+  toast.innerHTML = `
+    <i class="fa-solid ${iconClass} text-base"></i>
+    <span>${message}</span>
+  `;
+
+  // Isalpak sa container panel
+  container.appendChild(toast);
+
+  // Trigger smooth fade-in at pag-angat (Animation slide-up effect)
+  setTimeout(() => {
+    toast.classList.remove('translate-y-5', 'opacity-0');
+  }, 10);
+
+  // Awtomatikong mawawala pagkatapos ng 3 segundo (3000ms)
+  setTimeout(() => {
+    toast.classList.add('translate-y-5', 'opacity-0');
+    // Hintaying matapos ang transition bago tuluyang burahin sa DOM node tree
+    setTimeout(() => {
+      toast.remove();
+    }, 300);
+  }, 3000);
+}
+
+
 
 //archive function 
 window.archiveOrder = function(index) {
@@ -171,7 +221,9 @@ window.archiveOrder = function(index) {
   localStorage.setItem('computer_grid_orders', JSON.stringify(orders));
   localStorage.setItem('computer_grid_archived', JSON.stringify(archivedOrders));
   
+  //show toast state
+  showToast("Record successfully moved to archive vault", "success");
+
   // 4. Re-render para magbago agad ang listahan sa screen nang hindi nagre-reload ang page
   renderOrdersTable();
 };
-}
