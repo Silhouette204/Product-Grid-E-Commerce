@@ -112,6 +112,9 @@ body {
   @apply text-secondary text-2xl hover:text-dark md:text-lg lg:text-3xl;
 }
 
+.contact-image{
+  @apply bg-[url(/public/image/bg-contact.png)];
+}
 
 /*add to cart*/
 body {
