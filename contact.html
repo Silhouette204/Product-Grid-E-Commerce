@@ -20,8 +20,8 @@
       <p class="text-sm text-primary/90 mb-4 leading-relaxed lg:text-base">
         "Have questions about a build, component compatibility, or an existing order? Our team is here to help. Drop us a message through our inquiry form or reach out directly via our official channels below. Let’s build your dream rig together."
       </p>
-      <a href="" class="bg-secondary text-primary hover:bg-dark transition font-semibold px-4 py-2 rounded-lg transition-colors lg:py-4 lg:px-6 lg:text-lg hover:text-secondary">
-        Submit a form
+      <a href="#" class="open-modal-trigger bg-secondary text-primary hover:bg-dark transition font-semibold px-4 py-2 rounded-lg transition-colors lg:py-4 lg:px-6 lg:text-lg hover:text-secondary">
+        Submit a Form
       </a>
     </div>
   </div>
@@ -136,12 +136,73 @@
 
 <div class="flex flex-col gap-8 items-center my-15">
   <h1 class="text-2xl text-center mx-10 font-semibold lg:text-4xl">STILL CAN'T FIND WHAT YOU'RE LOOKING FOR?</h1>
-  <a href="#" class="border w-fit p-3 text-sm font-semibold lg:text-lg hover:bg-primary transition rounded">SEND US EMAIL</a>
+  <a href="#" class="open-modal-trigger border w-fit p-3 text-sm font-semibold lg:text-lg hover:bg-primary transition rounded">SEND US EMAIL</a>
   <p class="text-center lg:text-lg ">THANK YOU FOR YOUR PATIENCE AS OUR CUSTOMER SERVICE TEAM IS EXPERIENCING PHONE VOLUME.</br> WE ARE HAPPY TO QUICKLY ASSIST YOU THROUGH LIVE CHAT OR CHECK OUR <span class="text-secondary/70"> FAQs.</span> WE LOOK FORWARD TO SERVING YOU.</p>
   
 </div>
 
 </div>
+
+<div id="contact-modal" class="hidden opacity-0 fixed inset-0 z-[300] flex items-center justify-center p-4 transition-all duration-300 ease-out bg-zinc-950/80 backdrop-blur-sm">
+  
+  <div id="modal-box" class="bg-primary w-full max-w-4xl h-auto max-h-[90vh] overflow-y-auto md:overflow-hidden grid grid-cols-1 md:grid-cols-2 rounded-2xl shadow-2xl border border-zinc-200 transform scale-95 transition-transform duration-300 relative">
+    
+    <button id="close-modal-btn" class="absolute top-4 right-4 z-50 text-secondary bg-white/80 backdrop-blur-md hover:bg-dark hover:text-secondary w-8 h-8 rounded-full flex items-center justify-center transition shadow border border-zinc-200">
+      <i class="fa-solid fa-xmark text-sm"></i>
+    </button>
+
+    <div class="hidden md:block relative w-full h-full min-h-[400px] bg-[url('/public/image/bg-contact.png')] bg-cover bg-center">
+      <div class="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/40 to-transparent"></div>
+      <div class="absolute bottom-8 left-8 right-8 text-white z-10">
+        <h3 class="text-2xl font-bold font-sans uppercase tracking-wider mb-2 text-light">Computer Grid</h3>
+        <p class="text-xs text-zinc-300 leading-relaxed">Precision hardware configurations engineering loop deployed straight to your setup ecosystem.</p>
+      </div>
+    </div>
+
+    <div class="p-8 flex flex-col justify-center w-full h-full bg-white text-dark">
+      <div class="mb-6">
+        <h2 class="text-2xl font-bold tracking-tight md:text-3xl text-zinc-900">Contact Us</h2>
+        <p class="text-xs text-zinc-500 mt-1">Complete the system fields below and our core matrix will sync up soon.</p>
+      </div>
+
+      <form id="modal-inquiry-form" class="space-y-4 text-left">
+        <div>
+          <label class="block text-xs font-bold uppercase text-zinc-600 mb-1">Full Name <span class="text-red-500">*</span></label>
+          <input type="text" id="modal-name" required class="w-full bg-zinc-50 border border-zinc-300 p-2.5 rounded-lg text-sm text-zinc-900 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition">
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-bold uppercase text-zinc-600 mb-1">Email <span class="text-red-500">*</span></label>
+            <input type="email" id="modal-email" required class="w-full bg-zinc-50 border border-zinc-300 p-2.5 rounded-lg text-sm text-zinc-900 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition">
+          </div>
+          <div>
+            <label class="block text-xs font-bold uppercase text-zinc-600 mb-1">Contact Number</label>
+            <input type="tel" id="modal-phone" class="w-full bg-zinc-50 border border-zinc-300 p-2.5 rounded-lg text-sm text-zinc-900 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition" placeholder="09xxxxxxxxx">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold uppercase text-zinc-600 mb-1">Address <span class="text-red-500">*</span></label>
+          <input type="text" id="modal-address" required class="w-full bg-zinc-50 border border-zinc-300 p-2.5 rounded-lg text-sm text-zinc-900 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition">
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold uppercase text-zinc-600 mb-1">Message <span class="text-red-500">*</span></label>
+          <textarea id="modal-message" required rows="3" class="w-full bg-zinc-50 border border-zinc-300 p-2.5 rounded-lg text-sm text-zinc-900 resize-none focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition" placeholder="Write your message or inquiry here..."></textarea>
+        </div>
+
+        <button type="submit" class="w-full bg-secondary text-primary font-bold py-3 px-4 rounded-lg hover:bg-zinc-900 transition duration-300 shadow flex items-center justify-center gap-2 tracking-wide uppercase text-sm">
+          <i class="fa-solid fa-paper-plane text-xs"></i> Submit Message
+        </button>
+      </form>
+    </div>
+
+  </div>
+</div>
+
+
+<div id="toast-container" class="fixed bottom-5 right-5 z-[400] flex flex-col gap-2"></div>
 
 </body>
 
@@ -151,5 +212,5 @@
 <div id="cart-container"></div>
 
 <script type="module" src="/src/main.js"></script>
-<script src="/src/order-history-list.js"></script>
+<script src="/src/contact.js"></script>
 </html>
