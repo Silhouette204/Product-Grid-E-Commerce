@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <title>Contacts - Computer Grid</title>
+</head>
+<body class="bg-dark">
+
+  <div class="min-h-screen flex items-center justify-center p-4 font-poppins">
+    
+    <div class="bg-primary w-full max-w-4xl grid grid-cols-1 md:grid-cols-5 rounded-2xl shadow-2xl overflow-hidden min-h-[550px] relative">
+      
+      <div id="auth-info-panel" class="relative hidden md:flex md:col-span-2 bg-[url('/public/image/signin-img.png')] brightness-80 text-white p-8 flex-col justify-between items-center text-center border-r border-zinc-800 transition-all duration-500">
+
+        <div class="flex items-center gap-2">
+          <i class="fa-solid fa-terminal text-primary text-xl"></i>
+          <span class="font-bold uppercase tracking-wider text-sm lg:text-2xl">Computer Grid</span>
+        </div>
+  
+        <div class="relative my-auto space-y-4 py-8">
+          <div id="info-content-signin" class="space-y-3">
+            <h2 class="text-4xl font-bold tracking-tight text-white">Welcome Back!</h2>
+            <p class="text-xs text-primary leading-relaxed max-w-xs mx-auto lg:text-sm">To keep connected with our central hardware inventory deployment ecosystem, please log in with your account credentials.</p>
+          </div>
+  
+          <div id="info-content-signup" class="space-y-3 hidden">
+            <h2 class="text-2xl font-bold tracking-tight text-white">Hello, Builder!</h2>
+            <p class="text-xs text-zinc-400 leading-relaxed max-w-xs mx-auto">Enter your personal telemetry data parameters and start engineering your custom loop configurations grid today.</p>
+            <button id="switch-to-signin" class="mt-4 border border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white px-6 py-2 rounded-full text-xs font-bold uppercase tracking-wider transition duration-300">
+              Sign In Instead
+            </button>
+          </div>
+        </div>
+  
+        <div class="text-[10px] text-primary tracking-widest uppercase">Security Node v1.0</div>
+      </div>
+  
+      <div class="col-span-1 md:col-span-3 p-8 md:p-12 flex flex-col justify-center bg-white text-zinc-900 transition-all duration-500 relative">
+        
+        <a href="index.html" id="exit-auth-btn" class="absolute top-5 right-5 text-zinc-400 hover:text-zinc-950 bg-zinc-100 hover:bg-zinc-200 w-8 h-8 rounded-full flex items-center justify-center transition duration-200 z-50 shadow-sm" title="Return to Main Page">
+          <i class="fa-solid fa-xmark text-sm"></i>
+        </a>
+
+        <div id="form-box-signin" class="space-y-5">
+          <div>
+            <div class="flex flex-col gap-6 mb-10 ">
+              <h2 class="text-3xl font-bold tracking-tight text-zinc-950">Login Account / Sign In</h2>
+              <p class="text-sm">"Initialize connection token to access your custom loop and component grid."</p>
+            </div>
+
+            <form id="login-form" class="space-y-4 ">
+             
+              <div class="relative">
+                <i class="fa-regular fa-envelope absolute left-3 top-3.5 text-zinc-400 text-sm"></i>
+                <input type="email" placeholder="Email Address" required class="w-full bg-zinc-50 border border-zinc-200 p-2.5 pl-10 rounded-lg text-sm text-zinc-900 focus:outline-none focus:border-light focus:ring-1 focus:ring-light transition">
+              </div>
+              <div class="mb-10">
+                <div class="relative">
+                  <i class="fa-solid fa-lock absolute left-3 top-3.5 text-zinc-400 text-sm"></i>
+                  <input type="password" placeholder="Password" required class="w-full bg-zinc-50 border border-zinc-200 p-2.5 pl-10 rounded-lg text-sm text-zinc-900 focus:outline-none focus:border-light focus:ring-1 focus:ring-light transition">
+                </div>
+              </div>
+
+              <div class="flex flex-row items-center justify-between">
+                <div>
+                  <button type="submit" class="w-fit bg-secondary hover:bg-light text-primary font-bold py-2.5 px-10 rounded-full transition duration-300 uppercase text-xs  shadow-md shadow-orange-500/20 whitespace-nowrap ">
+                    Sign In
+                  </button>
+                </div>
+
+                <div class="flex flex-col">
+                  <div class="text-right">
+                    <a href="#" id="to-forgot-btn" class="text-xs font-semibold text-zinc-500 hover:text-light transition">Forgot your password?</a>
+                  </div>
+                  <div class="text-right my-2">
+                    <p class="text-xs text-zinc-500 ml-10 md:ml-0">New user here? <a href="#" id="mobile-to-signup" class="text-xs text-secondary font-bold hover:underline">Create an account</a></p>
+                  </div> 
+                </div>   
+              </div>
+            </form>
+          </div>
+        </div>
+  
+        <div id="form-box-signup" class="space-y-4 hidden">
+          <div>
+            <h2 class="text-3xl font-bold tracking-tight text-zinc-950">Create Account</h2>
+            <div class="flex gap-3 my-2">
+              <a href="#" class="w-8 h-8 rounded-full border border-zinc-200 flex items-center justify-center text-zinc-600 hover:bg-zinc-50 transition"><i class="fa-brands fa-facebook-f text-xs"></i></a>
+              <a href="#" class="w-8 h-8 rounded-full border border-zinc-200 flex items-center justify-center text-zinc-600 hover:bg-zinc-50 transition"><i class="fa-brands fa-google text-xs"></i></a>
+              <a href="#" class="w-8 h-8 rounded-full border border-zinc-200 flex items-center justify-center text-zinc-600 hover:bg-zinc-50 transition"><i class="fa-brands fa-linkedin-in text-xs"></i></a>
+            </div>
+            <p class="text-[11px] text-zinc-400 uppercase tracking-wider">or fill up registration parameters</p>
+          </div>
+  
+          <form id="register-form" class="space-y-3">
+            <div class="relative">
+              <i class="fa-regular fa-user absolute left-3 top-3.5 text-zinc-400 text-sm"></i>
+              <input type="text" placeholder="Full Name" required class="w-full bg-zinc-50 border border-zinc-200 p-2.5 pl-10 rounded-lg text-sm text-zinc-900 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition">
+            </div>
+            <div class="relative">
+              <i class="fa-regular fa-envelope absolute left-3 top-3.5 text-zinc-400 text-sm"></i>
+              <input type="email" placeholder="Email Address" required class="w-full bg-zinc-50 border border-zinc-200 p-2.5 pl-10 rounded-lg text-sm text-zinc-900 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition">
+            </div>
+            <div class="relative">
+              <i class="fa-solid fa-map-pin absolute left-3.5 top-3.5 text-zinc-400 text-sm"></i>
+              <input type="text" placeholder="Delivery Address" required class="w-full bg-zinc-50 border border-zinc-200 p-2.5 pl-10 rounded-lg text-sm text-zinc-900 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition">
+            </div>
+            <div class="relative">
+              <i class="fa-solid fa-lock absolute left-3 top-3.5 text-zinc-400 text-sm"></i>
+              <input type="password" placeholder="Create Password" required class="w-full bg-zinc-50 border border-zinc-200 p-2.5 pl-10 rounded-lg text-sm text-zinc-900 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition">
+            </div>
+
+            <div class="text-left md:hidden my-2">
+              <p class="text-xs text-zinc-500">Have an account? <a href="#" id="mobile-to-signin" class="text-orange-500 font-bold hover:underline">Log in parameters</a></p>
+            </div>
+
+            
+          </form>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>

@@ -28,7 +28,7 @@ export function renderNavigation(){
             </span>
           </button>
 
-<a href="#" class="text-lg font-semibold mr-2  text-primary hover:bg-primary py-2 px-4 hover:rounded-4xl hover:text-secondary duration-300 ease-in-out">
+<a href="/sign-in.html" class="text-lg font-semibold mr-2  text-primary hover:bg-primary py-2 px-4 hover:rounded-4xl hover:text-secondary duration-300 ease-in-out">
   Sign In
 </a>
  </div>
