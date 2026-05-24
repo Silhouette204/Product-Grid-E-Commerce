@@ -27,7 +27,9 @@ export default defineConfig ({
         contact: resolve(__dirname, "contact.html"),
         order: resolve(__dirname, "order.html"),
         archive: resolve(__dirname, "archive.html"),
-        
+        signIn: resolve(__dirname, "sign-in.html"),
+        signUp: resolve(__dirname, "sign-up.html"),
+        forgotPassword: resolve(__dirname, "forgot-password.html"),
 
         // PRODUCT-ITEMS
         sysUnit: resolve(__dirname, "product-sysUnit.html"),
