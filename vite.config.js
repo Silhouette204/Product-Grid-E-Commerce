@@ -30,6 +30,7 @@ export default defineConfig ({
         signIn: resolve(__dirname, "sign-in.html"),
         signUp: resolve(__dirname, "sign-up.html"),
         forgotPassword: resolve(__dirname, "forgot-password.html"),
+        profile: resolve(__dirname, "profile.html"),
 
         // PRODUCT-ITEMS
         sysUnit: resolve(__dirname, "product-sysUnit.html"),

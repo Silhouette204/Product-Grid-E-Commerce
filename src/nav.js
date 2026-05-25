@@ -56,7 +56,7 @@ export function renderNavigation(){
 </div >
 
     <div class="p-4">
-    <nav class="border-b-2">
+    <nav class="border-b-3 pb-4">
     <ul class="flex flex-col gap-3">
       <li class="link-nav"><i class="fa-solid fa-house mx-2"></i><a href="/index.html">Home</a></li>
 
@@ -68,16 +68,17 @@ export function renderNavigation(){
        <li class="link-nav"><i class="fa-solid fa-truck-fast mx-2"></i><a href="/product.html">Products</a></li>
        ` : ''}
               
-       <li class="link-nav"><i class="fa-solid fa-address-card mx-2"></i><a href="/contact.html">Contact</a></li>
+       <li class="link-nav"><i class="fa-solid fa-address-card mx-2 "></i><a href="/contact.html">Contact</a></li>
 
        ${isLoggedIn ? `
        <li class="link-nav"><i class="fa-solid fa-clipboard-list text-2xl mx-3"></i><a href="/order.html">My Order</a></li>
        ` : ''}
+
+       ${isLoggedIn ? `
+        <li class="link-nav"><i class="fa-solid fa-user text-2xl mx-3"></i><a href="/profile.html">My Account</a></li>
+        ` : ''}
     </ul>
 
-    ${!isLoggedIn ? `
-    <a href="#" class="inline-flex mx-3 my-10 py-3 px-10 bg-secondary text-primary text-base font-semibold rounded-2xl hover:bg-primary hover:text-secondary transition duration-300 ease-in-out">Sign Up</a>
-    ` : ''}
 </nav>
 
 <div class="my-5 ${isLoggedIn ? '' : 'hidden'}">
