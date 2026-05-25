@@ -1,53 +1,87 @@
-// src/auth-system.js
+// src/auth.js
+
+// 🚀 REGISTER TOAST ENGINE IN GLOBAL SCOPE IMMEDIATELY
+window.showToast = function(message, type = "success") {
+  const bgColor = type === "success" ? "bg-emerald-600 shadow-emerald-900/20" : "bg-red-600 shadow-red-900/20";
+  const icon = type === "success" ? "fa-circle-check" : "fa-circle-exclamation";
+
+  const toast = document.createElement("div");
+  toast.className = `fixed bottom-5 right-5 z-50 flex items-center gap-3 ${bgColor} text-white px-5 py-3.5 rounded-xl font-poppins text-sm font-medium shadow-xl transform translate-y-10 opacity-0 transition-all duration-300 ease-out`;
+  
+  toast.innerHTML = `
+    <i class="fa-solid ${icon} text-base"></i>
+    <span>${message}</span>
+  `;
+
+  document.body.appendChild(toast);
+
+  setTimeout(() => {
+    toast.classList.remove("translate-y-10", "opacity-0");
+  }, 10);
+
+  setTimeout(() => {
+    toast.classList.add("opacity-0", "translate-y-2");
+    setTimeout(() => {
+      toast.remove();
+    }, 300);
+  }, 3000);
+};
+
+const ACCOUNT_CREATED_FLAG = "account_created_redirect";
 
 document.addEventListener("DOMContentLoaded", () => {
-  // --- CORE ENGINE SELECTION NODES ---
   const registerForm = document.getElementById("register-form");
   const loginForm = document.getElementById("login-form");
+
+  // Show success toast on sign-in after account creation redirect
+  if (sessionStorage.getItem(ACCOUNT_CREATED_FLAG) === "true") {
+    sessionStorage.removeItem(ACCOUNT_CREATED_FLAG);
+    window.showToast("🎉 Account profile successfully created! Please sign in to continue.", "success");
+  }
 
   // ==========================================
   // 1. ACCOUNT CREATION ENGINE (SIGN UP)
   // ==========================================
   if (registerForm) {
     registerForm.addEventListener("submit", (e) => {
-      e.preventDefault(); // Pipigilan muna natin ang page reload
+      e.preventDefault(); 
 
-      // Extract raw element nodes
       const username = document.getElementById("register-username").value.trim();
       const email = document.getElementById("register-email").value.trim();
       const contact = document.getElementById("register-contact").value.trim();
-      const password = document.getElementById("register-password").value;
-      const confirmPassword = document.getElementById("confirm-password").value;
+      
+      // 💡 PINANTAY SA SIGN-UP.JS: Nilagyan ng .trim() para iwas space bugs
+      const password = document.getElementById("register-password").value.trim();
+      const confirmPassword = document.getElementById("confirm-password").value.trim();
 
       // VALIDATION: Strict Password Match Check
       if (password !== confirmPassword) {
-        alert("🚨 Security Alert: Passwords do not match! Please verify configuration parameters.");
+        window.showToast("⚠️ Passwords do not match! Please verify configuration parameters.", "error");
         return;
       }
 
-      // Check kung may nakarekord nang email sa database matrix natin
+      if (!email || !password) {
+        window.showToast("⚠️ Fill up all entry fields node.", "error");
+        return;
+      }
+
       const existingUsers = JSON.parse(localStorage.getItem("computer_grid_users")) || [];
       const emailExists = existingUsers.some(user => user.email === email);
 
       if (emailExists) {
-        alert("🚨 System Identity Error: Email address is already registered to a network node.");
+        window.showToast("⚠️ Email address is already registered to a network node.", "error");
         return;
       }
 
       // Construct New User Identity Node Object
-      const newUser = {
-        username,
-        email,
-        contact,
-        password // Tandaan paps, client-side encryption loop (plain text muna para sa local structural dev)
-      };
+      const newUser = { username, email, contact, password };
 
       // Push into simulation database array
       existingUsers.push(newUser);
       localStorage.setItem("computer_grid_users", JSON.stringify(existingUsers));
 
-      alert("🎉 Connection Identity Configured! Account profile successfully created.");
-      window.location.href = "sign-in.html"; // Auto redirect to Login terminal
+      sessionStorage.setItem(ACCOUNT_CREATED_FLAG, "true");
+      window.location.href = "sign-in.html";
     });
   }
 
@@ -58,33 +92,30 @@ document.addEventListener("DOMContentLoaded", () => {
     loginForm.addEventListener("submit", (e) => {
       e.preventDefault();
 
-      const emailInput = loginForm.querySelector('input[type="email"]').value.trim();
-      const passwordInput = document.getElementById("input-password").value;
+      const emailInput = document.getElementById("signin-email").value.trim();
+      const passwordInput = document.getElementById("input-password").value.trim();
 
       const registeredUsers = JSON.parse(localStorage.getItem("computer_grid_users")) || [];
-
-      // Validating match values inside database grid arrays
       const validUser = registeredUsers.find(user => user.email === emailInput && user.password === passwordInput);
 
       if (validUser) {
-        // Ise-set natin ang logged-in state sa active session profile matrix
         localStorage.setItem("active_user_session", JSON.stringify({
           username: validUser.username,
           email: validUser.email,
           loginToken: true
         }));
 
-        alert(`🚀 Welcome back, Agent ${validUser.username}! Secure connection sequence initialized.`);
-        window.location.href = "index.html"; // Lipad pabalik sa user main hub
+        window.showToast(`🚀 Welcome back, Agent ${validUser.username}! Secure connection sequence initialized.`, "success");
+        
+        setTimeout(() => {
+          window.location.href = "index.html"; 
+        }, 1500);
       } else {
-        alert("🚨 Access Denied: Invalid email credentials or password override failure.");
+        window.showToast("🚨 Access Denied: Invalid email credentials or password failure.", "error");
       }
     });
   }
 
-  // ==========================================
-  // 3. REMAINING TASK 1 & 2: ROUTER SECURITY & NAV GUARD
-  // ==========================================
   guardSystemGateway();
 });
 
@@ -93,24 +124,20 @@ function guardSystemGateway() {
   const isUserAuthenticated = localStorage.getItem("active_user_session") !== null;
   const currentPath = window.location.pathname;
 
-  // --- TASK 1: NAV LINK EXTINCTION LOGIC ---
-  // Ang code block na ito ay hahanap ng mga links na papuntang products at tatanggalin sa view node kapag unauthenticated.
   const secureNavLinks = document.querySelectorAll("nav a, footer a, .grid-nav-links");
   
   if (!isUserAuthenticated) {
     secureNavLinks.forEach(link => {
       const hrefValue = link.getAttribute("href");
       if (hrefValue && (hrefValue.includes("products.html") || hrefValue.includes("product-list"))) {
-        link.style.display = "none"; // Binubura ang element sa DOM structure tree
+        link.style.display = "none"; 
       }
     });
   }
 
-  // --- TASK 2: DIRECT URL BAR HARD DETECTOR ---
-  // Kung pilit nilang ita-type ang secure URL sa endpoint address, ibabalik sila sa control deck index.
   if (currentPath.includes("products.html")) {
     if (!isUserAuthenticated) {
-      alert("🔒 Security Override Active: Access Denied. Authenticated credentials needed to interface inventory systems.");
+      alert("🔒 Security Override Active: Access Denied. Authenticated credentials needed.");
       window.location.href = "index.html";
     }
   }
