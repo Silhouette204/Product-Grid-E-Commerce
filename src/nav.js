@@ -9,6 +9,18 @@ export function renderNavigation(){
     return;
   }
 
+  // --- 🔒 CHECK ACCOUNT STATUS ---
+  const isLoggedIn = localStorage.getItem("active_user_session") !== null;
+
+  // Render sign-in or logout action button dynamically based on session
+  const authActionButton = isLoggedIn
+    ? `<button id="system-logout-trigger" class="text-lg font-semibold mr-2 text-primary hover:bg-red-700 py-2 px-4 hover:rounded-4xl hover:text-white duration-300 ease-in-out cursor-pointer">
+        Logout
+       </button>`
+    : `<a href="/sign-in.html" class="text-lg font-semibold mr-2 text-primary hover:bg-primary py-2 px-4 hover:rounded-4xl hover:text-secondary duration-300 ease-in-out">
+        Sign In
+       </a>`;
+
   navContainer.innerHTML = `
       <div class="flex flex-row justify-between items-center p-5 lg:px-20 bg-secondary fixed w-full top-0 z-50 shadow-md">
 
@@ -19,22 +31,21 @@ export function renderNavigation(){
         <h1 class="text-xl md:text-2xl font-semibold text-primary">Computer Grid</h1>
         </div>
 
-        <div class="flex flex-row md:gap-5"> 
+        <div class="flex flex-row md:gap-5 items-center"> 
 
+        ${isLoggedIn ? `
         <button onclick="toggleCart()" class="relative p-2 text-primary text-2xl cursor-pointer group">
             <i class="fa-solid fa-cart-shopping transition-transform  text-2xl hover:text-dark hover:transition"></i>
             <span id="cart-count" class="absolute -top-1 -right-1 bg-red-600 text-white text-[10px] font-bold h-5 w-5 flex items-center justify-center rounded-full border-2 border-secondary ">
               0
             </span>
           </button>
-
-<a href="/sign-in.html" class="text-lg font-semibold mr-2  text-primary hover:bg-primary py-2 px-4 hover:rounded-4xl hover:text-secondary duration-300 ease-in-out">
-  Sign In
-</a>
+       ` : ''}
+        ${authActionButton}
  </div>
      </div>
 
-        <div id="backdrop" class="fixed inset-0 bg-backdrop/50 opacity-1 pointer-events-none transition-opacity duration-300 z-50"></div>
+        <div id="backdrop" class="fixed inset-0 bg-backdrop/50 opacity-0 pointer-events-none transition-opacity duration-300 z-50"></div>
 
 <aside id="side-nav" 
   class="fixed top-0 left-0 w-65 h-full bg-white/70 backdrop-blur-md border-r border-primary shadow-xl transform transition-transform duration-300 ease-in-out z-50 -translate-x-full overflow-auto">
@@ -53,27 +64,31 @@ export function renderNavigation(){
 
        <li class="link-nav"><i class="fa-solid fa-newspaper mx-2"></i><a href="/article.html">Article</a></li>
      
+       ${isLoggedIn ? `
        <li class="link-nav"><i class="fa-solid fa-truck-fast mx-2"></i><a href="/product.html">Products</a></li>
+       ` : ''}
               
        <li class="link-nav"><i class="fa-solid fa-address-card mx-2"></i><a href="/contact.html">Contact</a></li>
 
+       ${isLoggedIn ? `
        <li class="link-nav"><i class="fa-solid fa-clipboard-list text-2xl mx-3"></i><a href="/order.html">My Order</a></li>
+       ` : ''}
     </ul>
 
-
+    ${!isLoggedIn ? `
     <a href="#" class="inline-flex mx-3 my-10 py-3 px-10 bg-secondary text-primary text-base font-semibold rounded-2xl hover:bg-primary hover:text-secondary transition duration-300 ease-in-out">Sign Up</a>
+    ` : ''}
 </nav>
 
-<div class="my-5">
+<div class="my-5 ${isLoggedIn ? '' : 'hidden'}">
 <h3 class="my-3 text-xl font-semibold">Product List</h3>
 
 <ul id="product-nav" class="flex flex-col gap-2 my-4">
- <!-- product-nav will be dynamically inserted here (product-nav.js)-->  
-</ul>
+ </ul>
 
 
 <div class="flex justify-center mt-6">
- <button id="nav-load-more" class="text-lg font-base hover:text-dark duration-300 cursor-pointer"> <!-- nasa product-nav.js ang switch word--> </button>
+ <button id="nav-load-more" class="text-lg font-base hover:text-dark duration-300 cursor-pointer"> </button>
  </div>
 </div>
 
@@ -83,8 +98,23 @@ export function renderNavigation(){
   </div>
   `
   setUpNav();
-  rendernavData();
-  exportNavLoadMore();
+
+  // Doon lang natin i-render ang extra category lists kapag validated user session node
+  if(isLoggedIn){
+    rendernavData();
+    exportNavLoadMore();
+  }
+
+  // LOGOUT DETECTOR HANDLER TRIGGER CLICK
+  const logoutBtn = document.querySelector('#system-logout-trigger');
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', () => {
+      localStorage.removeItem("active_user_session");
+      localStorage.removeItem("pc_grid_cart"); // Sabay nating linisin ang cart bundle data records
+      alert("🔒 Session terminated safely. Redirecting...");
+      window.location.href = "/index.html";
+    });
+  }
 }
 
 function setUpNav(){
@@ -110,10 +140,10 @@ function closeSideNav() {
   sideNav.classList.add('-translate-x-full');
 
   backdrop.classList.add('opacity-0', 'pointer-events-none'); 
-  backdrop.classList.remove('opacity-100', 'pointer-events-auto');  
+  backdrop.classList.remove('opacity-100', 'pointer-events-auto');   
 
   // Ibalik ang scroll
-document.body.style.overflow = '';
+  document.body.style.overflow = '';
   document.body.style.paddingRight = '0px';
 }
 
