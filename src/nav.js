@@ -111,7 +111,7 @@ export function renderNavigation(){
     logoutBtn.addEventListener('click', () => {
       localStorage.removeItem("active_user_session");
       localStorage.removeItem("pc_grid_cart"); // Sabay nating linisin ang cart bundle data records
-      alert("🔒 Session terminated safely. Redirecting...");
+      sessionStorage.setItem("user_logged_out", "true");
       window.location.href = "/index.html";
     });
   }

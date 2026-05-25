@@ -28,6 +28,7 @@ window.showToast = function(message, type = "success") {
 };
 
 const ACCOUNT_CREATED_FLAG = "account_created_redirect";
+const LOGOUT_REDIRECT_FLAG = "user_logged_out";
 
 document.addEventListener("DOMContentLoaded", () => {
   const registerForm = document.getElementById("register-form");
@@ -37,6 +38,12 @@ document.addEventListener("DOMContentLoaded", () => {
   if (sessionStorage.getItem(ACCOUNT_CREATED_FLAG) === "true") {
     sessionStorage.removeItem(ACCOUNT_CREATED_FLAG);
     window.showToast("🎉 Account profile successfully created! Please sign in to continue.", "success");
+  }
+
+  // Show farewell toast on home after logout redirect
+  if (sessionStorage.getItem(LOGOUT_REDIRECT_FLAG) === "true") {
+    sessionStorage.removeItem(LOGOUT_REDIRECT_FLAG);
+    window.showToast("Thank you for visiting Computer Grid. Your session has been securely ended. We appreciate your time and look forward to welcoming you again.", "success");
   }
 
   // ==========================================
