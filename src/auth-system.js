@@ -2,7 +2,6 @@
 
 // 🚀 REGISTER TOAST ENGINE IN GLOBAL SCOPE IMMEDIATELY
 window.showToast = function(message, type = "success") {
-  // Pinalitan ng "danger" check para bumagay sa setup mo kagabi
   const isError = type === "error" || type === "danger";
   const bgColor = isError ? "bg-red-600 shadow-red-900/20" : "bg-emerald-600 shadow-emerald-900/20";
   const icon = isError ? "fa-circle-exclamation" : "fa-circle-check";
@@ -62,7 +61,6 @@ document.addEventListener("DOMContentLoaded", () => {
       const password = document.getElementById("register-password").value.trim();
       const confirmPassword = document.getElementById("confirm-password").value.trim();
 
-      // VALIDATION: Strict Password Match Check
       if (password !== confirmPassword) {
         window.showToast("⚠️ Passwords do not match! Please verify configuration parameters.", "error");
         return;
@@ -81,11 +79,9 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      // 💡 ADDED: Formatted Signup Date Node Creation (Format: May 27, 2026)
       const options = { year: 'numeric', month: 'long', day: 'numeric' };
       const formattedSignUpDate = new Date().toLocaleDateString('en-US', options);
 
-      // 🚨 STRUCTURAL UPDATE: Nilagyan na ng default address block at signup date para sa master index
       const newUser = { 
         username, 
         email, 
@@ -101,7 +97,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       };
 
-      // Push into simulation database array
       existingUsers.push(newUser);
       localStorage.setItem("computer_grid_users", JSON.stringify(existingUsers));
 
@@ -124,14 +119,12 @@ document.addEventListener("DOMContentLoaded", () => {
       const validUser = registeredUsers.find(user => user.email.toLowerCase() === emailInput.toLowerCase() && user.password === passwordInput);
 
       if (validUser) {
-        // Backfill signUpDate for older accounts that were created before this field existed
         if (!validUser.signUpDate) {
           const options = { year: 'numeric', month: 'long', day: 'numeric' };
           validUser.signUpDate = new Date().toLocaleDateString('en-US', options);
           localStorage.setItem("computer_grid_users", JSON.stringify(registeredUsers));
         }
 
-        // 🚨 CRITICAL FIX LAYER: Isinama natin ang 'signUpDate' at 'contact' pabalik sa active user session array object node
         localStorage.setItem("active_user_session", JSON.stringify({
           username: validUser.username,
           email: validUser.email,
@@ -151,6 +144,28 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  // ==========================================
+  // ⚡ GINAWANG DYNAMIC INJECTION PARA SA WELCOME USERNAME
+  // ==========================================
+  function injectHeroUsername() {
+    const activeSession = JSON.parse(localStorage.getItem("active_user_session"));
+    
+    // Tiyakin muna natin na may active na nag-login
+    if (activeSession && activeSession.username) {
+      // Hahanapin lahat ng template tags na may ID na 'hero-username'
+      const usernameNodes = document.querySelectorAll("#hero-username");
+      
+      usernameNodes.forEach(node => {
+        // Ginamitan ng innerHTML para makapagsaksak ng custom styling at "!" sa dulo
+        node.innerHTML = ` <span class="underline text-secondary/80 font-semibold">${activeSession.username}</span>!`;
+      });
+    }
+  }
+
+  // Patakbuhin kaagad ang injector engine pagka-render ng HTML Elements
+  injectHeroUsername();
+
+  // Run routing gateway system
   guardSystemGateway();
 });
 
