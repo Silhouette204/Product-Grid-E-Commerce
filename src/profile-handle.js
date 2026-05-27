@@ -150,9 +150,43 @@ document.addEventListener("DOMContentLoaded", () => {
       
       // Auto-fill existing values down to input variables fields
       document.getElementById("modal-fullname").value = masterUserData?.fullname || "";
+      document.getElementById("modal-username").value = masterUserData?.username || "";
       document.getElementById("modal-contact").value = masterUserData?.contact || "";
       
+     //email and password na naka disabled
+     const modalEmailInput = document.getElementById("modal-locked-email");
+     if (modalEmailInput) {
+       modalEmailInput.value = activeSession.email || "";
+     }
+
+     const modalPasswordInput = document.getElementById("modal-locked-password");
+     if (modalPasswordInput) {
+       modalPasswordInput.value = masterUserData?.password || "";
+       modalPasswordInput.type = "password"; // Siguraduhing tago sa simula
+     }
+
+
       bioModal.classList.remove("hidden");
+    });
+  }
+
+  if (closeBioModal) {
+    closeBioModal.addEventListener("click", () => bioModal.classList.add("hidden"));
+  }
+
+  const togglePasswordBtn = document.getElementById("toggle-locked-pass");
+  const modalPasswordInput = document.getElementById("modal-locked-password");
+  if (togglePasswordBtn && modalPasswordInput) {
+    togglePasswordBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      const icon = togglePasswordBtn.querySelector("i");
+      if (modalPasswordInput.type === "password") {
+        modalPasswordInput.type = "text";
+        if (icon) icon.className = "fa-solid fa-eye-slash";
+      } else {
+        modalPasswordInput.type = "password";
+        if (icon) icon.className = "fa-solid fa-eye";
+      }
     });
   }
 
@@ -166,18 +200,28 @@ document.addEventListener("DOMContentLoaded", () => {
       const inputFullName = document.getElementById("modal-fullname").value.trim();
       const inputContact = document.getElementById("modal-contact").value.trim();
 
+      const usernameField = document.getElementById("modal-username");
+      const inputUsername = usernameField ? usernameField.value.trim() : activeSession.username;
+
       const allUsers = JSON.parse(localStorage.getItem("computer_grid_users")) || [];
       const userIndex = allUsers.findIndex(u => u.email === activeSession.email);
 
       if (userIndex !== -1) {
         // Save back update layers directly to master tracking configuration arrays
         allUsers[userIndex].fullname = inputFullName;
+        allUsers[userIndex].username = inputUsername;
         allUsers[userIndex].contact = inputContact;
         localStorage.setItem("computer_grid_users", JSON.stringify(allUsers));
+        
+        // 🚨 CRITICAL UPDATE: I-synchronize din ang active session para magbago ang "Welcome, [username]!" greetings mo agad
+        activeSession.username = inputUsername;
+        activeSession.contact = inputContact;
+        localStorage.setItem("active_user_session", JSON.stringify(activeSession));
 
         bioModal.classList.add("hidden");
         refreshProfileScreen();
         if (window.showToast) window.showToast("⚡ Biodata parameters synchronized successfully!", "success");
+
       }
     });
   }
