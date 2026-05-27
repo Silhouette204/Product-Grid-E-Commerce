@@ -124,6 +124,13 @@ document.addEventListener("DOMContentLoaded", () => {
       const validUser = registeredUsers.find(user => user.email.toLowerCase() === emailInput.toLowerCase() && user.password === passwordInput);
 
       if (validUser) {
+        // Backfill signUpDate for older accounts that were created before this field existed
+        if (!validUser.signUpDate) {
+          const options = { year: 'numeric', month: 'long', day: 'numeric' };
+          validUser.signUpDate = new Date().toLocaleDateString('en-US', options);
+          localStorage.setItem("computer_grid_users", JSON.stringify(registeredUsers));
+        }
+
         // 🚨 CRITICAL FIX LAYER: Isinama natin ang 'signUpDate' at 'contact' pabalik sa active user session array object node
         localStorage.setItem("active_user_session", JSON.stringify({
           username: validUser.username,
