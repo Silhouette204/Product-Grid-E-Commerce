@@ -771,6 +771,10 @@ function appendToOrderHistory() {
     
     // 2. Kunin ang mga text values mula sa resibo na binuo natin kagabi
     const referenceNo = document.querySelector('#receipt-ref')?.innerText || 'REF-UNKNOWN';
+    const customerEmailFromReceipt =
+      document.querySelector('#receipt-email')?.innerText ||
+      document.querySelector('#cust-email')?.value ||
+      '';
     const subtotal = document.querySelector('#receipt-subtotal')?.innerText || '₱0.00';
     const tax = document.querySelector('#receipt-tax')?.innerText || '₱0.00';
     const totalAmount = document.querySelector('#receipt-total')?.innerText || '₱0.00';
@@ -794,10 +798,13 @@ function appendToOrderHistory() {
     const newOrderLog = {
       invoiceNo: invoiceNo,
       date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }), // Lalabas na e.g. "May 20, 2026"
+      lastPurchaseAt: Date.now(), // Timestamp for accurate 1-week comparisons
       itemsSummary: orderItemsSummary,
       items: activeCart, 
       referenceNo: referenceNo,
       customerName: customerName,
+      userEmail: customerEmailFromReceipt,
+      email: customerEmailFromReceipt,
       address: address,
       subtotal: subtotal,
       tax: tax,

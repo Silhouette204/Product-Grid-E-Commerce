@@ -2,8 +2,10 @@
 
 // 🚀 REGISTER TOAST ENGINE IN GLOBAL SCOPE IMMEDIATELY
 window.showToast = function(message, type = "success") {
-  const bgColor = type === "success" ? "bg-emerald-600 shadow-emerald-900/20" : "bg-red-600 shadow-red-900/20";
-  const icon = type === "success" ? "fa-circle-check" : "fa-circle-exclamation";
+  // Pinalitan ng "danger" check para bumagay sa setup mo kagabi
+  const isError = type === "error" || type === "danger";
+  const bgColor = isError ? "bg-red-600 shadow-red-900/20" : "bg-emerald-600 shadow-emerald-900/20";
+  const icon = isError ? "fa-circle-exclamation" : "fa-circle-check";
 
   const toast = document.createElement("div");
   toast.className = `fixed bottom-5 right-5 z-50 flex items-center gap-3 ${bgColor} text-white px-5 py-3.5 rounded-xl font-poppins text-sm font-medium shadow-xl transform translate-y-10 opacity-0 transition-all duration-300 ease-out`;
@@ -57,7 +59,6 @@ document.addEventListener("DOMContentLoaded", () => {
       const email = document.getElementById("register-email").value.trim();
       const contact = document.getElementById("register-contact").value.trim();
       
-      // 💡 PINANTAY SA SIGN-UP.JS: Nilagyan ng .trim() para iwas space bugs
       const password = document.getElementById("register-password").value.trim();
       const confirmPassword = document.getElementById("confirm-password").value.trim();
 
@@ -67,21 +68,38 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      if (!email || !password) {
+      if (!email || !password || !username) {
         window.showToast("⚠️ Fill up all entry fields node.", "error");
         return;
       }
 
       const existingUsers = JSON.parse(localStorage.getItem("computer_grid_users")) || [];
-      const emailExists = existingUsers.some(user => user.email === email);
+      const emailExists = existingUsers.some(user => user.email.toLowerCase() === email.toLowerCase());
 
       if (emailExists) {
         window.showToast("⚠️ Email address is already registered to a network node.", "error");
         return;
       }
 
-      // Construct New User Identity Node Object
-      const newUser = { username, email, contact, password };
+      // 💡 ADDED: Formatted Signup Date Node Creation (Format: May 27, 2026)
+      const options = { year: 'numeric', month: 'long', day: 'numeric' };
+      const formattedSignUpDate = new Date().toLocaleDateString('en-US', options);
+
+      // 🚨 STRUCTURAL UPDATE: Nilagyan na ng default address block at signup date para sa master index
+      const newUser = { 
+        username, 
+        email, 
+        contact, 
+        password,
+        signUpDate: formattedSignUpDate,
+        fullname: "", 
+        address: {
+          country: "",
+          city: "",
+          postalCode: "",
+          homeAddress: ""
+        }
+      };
 
       // Push into simulation database array
       existingUsers.push(newUser);
@@ -103,12 +121,15 @@ document.addEventListener("DOMContentLoaded", () => {
       const passwordInput = document.getElementById("input-password").value.trim();
 
       const registeredUsers = JSON.parse(localStorage.getItem("computer_grid_users")) || [];
-      const validUser = registeredUsers.find(user => user.email === emailInput && user.password === passwordInput);
+      const validUser = registeredUsers.find(user => user.email.toLowerCase() === emailInput.toLowerCase() && user.password === passwordInput);
 
       if (validUser) {
+        // 🚨 CRITICAL FIX LAYER: Isinama natin ang 'signUpDate' at 'contact' pabalik sa active user session array object node
         localStorage.setItem("active_user_session", JSON.stringify({
           username: validUser.username,
           email: validUser.email,
+          contact: validUser.contact || "N/A",
+          signUpDate: validUser.signUpDate || "N/A",
           loginToken: true
         }));
 
