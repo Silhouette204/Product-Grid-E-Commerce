@@ -75,6 +75,8 @@ document.addEventListener("DOMContentLoaded", () => {
   function refreshProfileScreen() {
     const allUsers = JSON.parse(localStorage.getItem("computer_grid_users")) || [];
     const masterUserData = allUsers.find(u => u.email === activeSession.email);
+    
+
 
     if (!masterUserData) return;
 
@@ -417,4 +419,79 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   }
+});
+
+
+//PROFILE AVATAR
+// 1. Trigger para buksan ang Local File Manager ng device
+function triggerFileInput() {
+  document.getElementById('hidden-avatar-input').click();
+}
+
+// 2. Basahin ang image, i-convert sa Base64, at i-commit sa LocalStorage
+function handleAvatarUpload(event) {
+  const file = event.target.files[0];
+  
+  if (file) {
+      // Guard Check Rule: Limitahan sa 2MB para hindi sumabog ang localStorage limits
+      if (file.size > 2 * 1024 * 1024) {
+          alert("Masyadong malaki ang larawan! Pumili ng file na mababa sa 2MB para mag-save.");
+          event.target.value = ""; // Clear values
+          return;
+      }
+
+      const reader = new FileReader();
+      
+      reader.onload = function(e) {
+          const base64Str = e.target.result;
+          
+          // Kuhanin ang active user records mula sa database mo
+          let currentUser = JSON.parse(localStorage.getItem('active_user_session'));
+          let allUsers = JSON.parse(localStorage.getItem('computer_grid_users')) || [];
+
+          if (currentUser) {
+              // I-save ang Base64 string sa local app instance fields
+              currentUser.avatar = base64Str;
+              localStorage.setItem('active_user_session', JSON.stringify(currentUser));
+
+              // I-sync ang record node sa master users block array
+              let userIndex = allUsers.findIndex(user => user.username === currentUser.username);
+              if (userIndex !== -1) {
+                  allUsers[userIndex].avatar = base64Str;
+                  localStorage.setItem('computer_grid_users', JSON.stringify(allUsers));
+              }
+
+              // Patakbuhin agad ang display update function para makita ang pagbabago
+              renderUserAvatar();
+              
+              // Kung may load global navbar notification function ka, pwede mo ring tawagin dito:
+              // if(typeof updateNavbarAvatar === "function") updateNavbarAvatar();
+          }
+      };
+      
+      reader.readAsDataURL(file); // Execute logic stream conversion
+  }
+}
+
+// 3. Render Loop Execution Controller (Tawagin mo ito sa initialization / window onload phase mo)
+function renderUserAvatar() {
+  const session = JSON.parse(localStorage.getItem('active_user_session'));
+  const avatarImg = document.getElementById('user-avatar-render');
+  const defaultIcon = document.getElementById('default-avatar-icon');
+
+  if (session && session.avatar) {
+      // Kung may nakitang existing Base64, ipakita ang image node at itago ang static user icon
+      avatarImg.src = session.avatar;
+      avatarImg.classList.remove('hidden');
+      defaultIcon.classList.add('hidden');
+  } else {
+      // Fallback layout state kung bagong gawa o walang upload record
+      avatarImg.classList.add('hidden');
+      defaultIcon.classList.remove('hidden');
+  }
+}
+
+// Siguraduhing tumatakbo ito sa tuwing naglo-load ang profile page para laging up-to-date ang mukha ng account mo
+document.addEventListener("DOMContentLoaded", () => {
+  renderUserAvatar();
 });

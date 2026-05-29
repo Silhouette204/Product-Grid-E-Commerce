@@ -30,9 +30,21 @@
     <!-- ⚙️ FIXED PROFILE IMAGE CONTAINER -->
     <!-- Idinagdag ang 'flex-shrink-0' para hindi siya pwedeng mapiga o ma-deform ng flexbox -->
     <!-- Nilagyan natin ng selyadong lapad at taas (h-24 w-24 o h-28 w-28 depende sa trip mong laki) -->
-    <div id="profile-img" class="bg-dark h-24 w-24 lg:h-40 lg:w-40 rounded-full flex-shrink-0 flex items-center justify-center">
-      <!-- Pwedeng lagyan ng default avatar icon pansamantala habang wala pang image upload logic -->
-      <i class="fa-solid fa-user text-2xl text-secondary/40"></i>
+    <!-- ⚙️ FIXED PROFILE IMAGE CONTAINER (CLICK TO UPLOAD) -->
+    <div class="relative group h-24 w-24 lg:h-40 lg:w-40 flex-shrink-0">
+      <div id="profile-img" onclick="triggerFileInput()" class="bg-dark h-full w-full rounded-full overflow-hidden cursor-pointer border-2 border-secondary/20 hover:border-light transition relative">
+        
+        <i id="default-avatar-icon" class="fa-solid fa-user text-2xl lg:text-5xl text-secondary/40 absolute id-center inset-0 flex items-center justify-center"></i>
+        
+        <img id="user-avatar-render" src="" alt="Avatar" class="absolute inset-0 w-full h-full object-cover rounded-full hidden">
+    
+        <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center transition duration-200 z-10">
+          <i class="fa-solid fa-camera text-white text-xs lg:text-lg mb-1"></i>
+          <span class="text-[10px] lg:text-xs text-white font-medium">Change</span>
+        </div>
+      </div>
+    
+      <input type="file" id="hidden-avatar-input" onchange="handleAvatarUpload(event)" accept="image/*" class="hidden">
     </div>
 
     <!-- DISPLAY DATA PANEL -->

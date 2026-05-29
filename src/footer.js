@@ -78,7 +78,7 @@ export function renderFooter() {
  
            <div>
              <h3 class="text-xl text-primary font-semibold mt-5 mb-2 md:text-2xl">Socials</h3>
-             <ul class="flex flex-row flex-wrap gap-3 my-5">
+             <ul class="flex flex-row gap-3 my-5">
                <li class="social-links"> <a href="https://github.com/Silhouette204" class="text-primary hover:text-dark"><i class="fa-brands fa-github"></i></a></li>
                <li class="social-links"><a href="https://www.facebook.com/johnlester.burce/" class="text-primary hover:text-dark"><i class="fa-brands fa-facebook"></i></a></li>
                <li class="social-links"><a href="https://x.com/JohnWhiff3419" class="text-primary hover:text-dark"><i class="fa-brands fa-square-x-twitter"></i></a></li>
