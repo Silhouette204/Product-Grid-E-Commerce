@@ -4,6 +4,9 @@ import './style.css'
 import './password-logic.js';
 import './auth-system.js';
 
+//contact
+import './contact.js';
+
 //*
 import { renderNavigation } from './nav.js';
 import { renderFooter } from './footer.js';
