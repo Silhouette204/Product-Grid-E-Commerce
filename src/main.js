@@ -1,5 +1,9 @@
 import './style.css'
 
+//account handler 
+import './password-logic.js';
+import './auth-system.js';
+
 //*
 import { renderNavigation } from './nav.js';
 import { renderFooter } from './footer.js';
