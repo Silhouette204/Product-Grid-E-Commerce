@@ -157,7 +157,7 @@ document.addEventListener("DOMContentLoaded", () => {
       
       usernameNodes.forEach(node => {
         // Ginamitan ng innerHTML para makapagsaksak ng custom styling at "!" sa dulo
-        node.innerHTML = ` <span class="underline text-secondary/80 font-semibold">${activeSession.username}</span>!`;
+        node.innerHTML = ` <span class="underline text-dark/80 font-semibold">${activeSession.username}</span>!`;
       });
     }
   }
