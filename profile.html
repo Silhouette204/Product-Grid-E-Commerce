@@ -32,11 +32,9 @@
     <!-- Nilagyan natin ng selyadong lapad at taas (h-24 w-24 o h-28 w-28 depende sa trip mong laki) -->
     <!-- ⚙️ FIXED PROFILE IMAGE CONTAINER (CLICK TO UPLOAD) -->
     <div class="relative group h-24 w-24 lg:h-40 lg:w-40 flex-shrink-0">
-      <div id="profile-img" onclick="triggerFileInput()" class="bg-dark h-full w-full rounded-full overflow-hidden cursor-pointer border-2 border-secondary/20 hover:border-light transition relative">
+      <div id="profile-img" onclick="triggerFileInput()" class="bg-dark h-full w-full rounded-full overflow-hidden cursor-pointer border-2 border-secondary/20 hover:border-light transition flex items-center justify-center relative">
         
-        <i id="default-avatar-icon" class="fa-solid fa-user text-2xl lg:text-5xl text-secondary/40 absolute id-center inset-0 flex items-center justify-center"></i>
-        
-        <img id="user-avatar-render" src="" alt="Avatar" class="absolute inset-0 w-full h-full object-cover rounded-full hidden">
+        <img id="user-avatar-render" src="./public/image/default-avatar.png" class="w-full h-full object-cover" alt="Profile Picture">
     
         <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center transition duration-200 z-10">
           <i class="fa-solid fa-camera text-white text-xs lg:text-lg mb-1"></i>
@@ -51,7 +49,7 @@
     <!-- 💡 Idinagdag ang 'min-w-0' para gumana nang maayos ang text wrapping sa loob ng flex container -->
     <div id="display-data" class="min-w-0 flex-1 lg:ml-3">
       <div class="flex flex-col gap-2 justify-center">
-        <h4 class="text-sm font-semibold text-secondary/80">Username: <span id="hero-username" class="text-secondary ml-1">--</span></h4>
+        <h4 class="text-sm font-semibold text-secondary/80">Username: <span id="account-username" class="text-secondary ml-1">--</span></h4>
         <h4 class="text-sm font-semibold text-secondary/80">Email: <span id="hero-email" class="text-secondary break-all text-xs ml-1 md:text-sm">--</span></h4>
         <h4 class="text-sm font-semibold text-secondary/80">Contact: <span id="hero-contact" class="text-secondary ml-1">--</span></h4>
         <h4 class="text-sm font-semibold text-secondary/80">Order Status: <span id="order-status-container" class="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse mr-1 ml-1">--</span></h4>

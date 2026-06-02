@@ -1,9 +1,48 @@
-// src/profile-manager.js
+// ==========================================
+// AVATAR ENGINE: GLOBAL SCOPE BRIDGE
+// ==========================================
+window.triggerFileInput = function() {
+  const fileInput = document.getElementById('hidden-avatar-input');
+  if (fileInput) fileInput.click();
+};
 
+window.handleAvatarUpload = function(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const base64Image = e.target.result;
+    const activeSession = JSON.parse(localStorage.getItem("active_user_session"));
+    const allUsers = JSON.parse(localStorage.getItem("computer_grid_users")) || [];
+
+    if (activeSession) {
+      activeSession.profileImage = base64Image;
+      localStorage.setItem("active_user_session", JSON.stringify(activeSession));
+
+      const updatedUsers = allUsers.map(user => {
+        if (user.email.toLowerCase() === activeSession.email.toLowerCase()) {
+          return { ...user, profileImage: base64Image };
+        }
+        return user;
+      });
+      localStorage.setItem("computer_grid_users", JSON.stringify(updatedUsers));
+
+      const avatarRender = document.getElementById("user-avatar-render");
+      if (avatarRender) avatarRender.src = base64Image;
+
+      alert("📸 Profile avatar synchronized and saved permanently!");
+    }
+  };
+  reader.readAsDataURL(file);
+};
+
+// ==========================================
+// CORE PROFILE EVENT MANAGER
+// ==========================================
 document.addEventListener("DOMContentLoaded", () => {
   const activeSession = JSON.parse(localStorage.getItem("active_user_session"));
 
-  // ⚙️ DEFINED LOCAL TOAST ENGINE (Siguradong gagana kahit walang window scope)
   function localShowToast(message) {
     const toast = document.createElement("div");
     toast.className = "toast-notification";
@@ -24,7 +63,7 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
-  // TARGET DISPLAY DOM NODES
+  // DOM HOOKS
   const heroUsername = document.getElementById("hero-username");
   const heroEmail = document.getElementById("hero-email");
   const heroContact = document.getElementById("hero-contact");
@@ -40,7 +79,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const addrPostal = document.getElementById("addr-postal");
   const addrHome = document.getElementById("addr-home");
 
-  // MODAL ELEMENT DOM HOOKS
   const bioModal = document.getElementById("bio-modal");
   const addrModal = document.getElementById("addr-modal");
   const securityGateModal = document.getElementById("security-gate-modal");
@@ -61,22 +99,15 @@ document.addEventListener("DOMContentLoaded", () => {
   const sensitivePassForm = document.getElementById("sensitive-pass-form");
   
   const orderStatusContainer = document.getElementById("order-status-container");
-
-  // Eye modal sa password setting
   const toggleUpdatePassBtn = document.getElementById("toggle-update-pass");
   const updatePasswordInput = document.getElementById("update-new-password");
 
-  // State tracker para sa security gate Routing
   let activeSecurityTarget = ""; 
 
-  // ==========================================
-  // FUNCTION: RENDER DOM SCREEN INFORMATION
-  // ==========================================
+  // REFRESH SCREEN FUNCTION
   function refreshProfileScreen() {
     const allUsers = JSON.parse(localStorage.getItem("computer_grid_users")) || [];
     const masterUserData = allUsers.find(u => u.email === activeSession.email);
-    
-
 
     if (!masterUserData) return;
 
@@ -85,81 +116,54 @@ document.addEventListener("DOMContentLoaded", () => {
     if (bioContact) bioContact.textContent = masterUserData.contact || "N.A";
     if (bioEmail) bioEmail.textContent = masterUserData.email || "N.A";
 
+    // ORDER STATUS ENGINE
     if (orderStatusContainer) {
       const oneWeekMs = 7 * 24 * 60 * 60 * 1000;
       const allOrdersActive = JSON.parse(localStorage.getItem("computer_grid_orders")) || [];
       const allOrdersArchived = JSON.parse(localStorage.getItem("computer_grid_archived")) || [];
       const allOrders = [...allOrdersActive, ...allOrdersArchived];
 
-      function parseOrderDateToMs(order) {
-        const raw = order.lastPurchaseAt || order.purchaseDate || order.date;
-        if (!raw) return null;
-        const dt = new Date(raw);
-        const ms = dt.getTime();
-        return Number.isFinite(ms) ? ms : null;
-      }
-
       const userOrders = allOrders.filter(order => {
         const norm = (v) => (v ?? "").toString().trim().toLowerCase();
-        const orderEmail = norm(order.userEmail || order.email);
-        const activeEmail = norm(activeSession.email);
-        const orderName = norm(order.customerName);
-        const activeUsername = norm(activeSession.username);
-        const masterFullname = norm(masterUserData.fullname);
-        const masterUsername = norm(masterUserData.username);
-
-        const matchEmail = orderEmail && activeEmail && orderEmail === activeEmail;
-        const matchName =
-          orderName &&
-          ((activeUsername && orderName === activeUsername) ||
-            (masterFullname && orderName === masterFullname) ||
-            (masterUsername && orderName === masterUsername));
-
-        return matchEmail || matchName;
+        return norm(order.userEmail || order.email) === norm(activeSession.email);
       });
 
-      const lastPurchaseMs = userOrders
-        .map(parseOrderDateToMs)
-        .filter(Boolean)
-        .sort((a, b) => b - a)[0] || null;
-
-      const isActive =
-        userOrders.length > 0 && (lastPurchaseMs === null || (Date.now() - lastPurchaseMs) <= oneWeekMs);
-
+      const isActive = userOrders.length > 0;
       if (isActive) {
         orderStatusContainer.className = "text-emerald-400 ml-1 inline-flex items-center font-semibold text-sm";
-        orderStatusContainer.innerHTML = `
-          <span class="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse mr-1"></span>
-          Active
-        `;
+        orderStatusContainer.innerHTML = `<span class="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse mr-1"></span>Active`;
       } else {
         orderStatusContainer.className = "text-yellow-500 ml-1 inline-flex items-center font-semibold text-sm";
-        orderStatusContainer.innerHTML = `
-          <span class="inline-block w-2 h-2 rounded-full bg-yellow-500 mr-1"></span>
-          Inactive
-        `;
+        orderStatusContainer.innerHTML = `<span class="inline-block w-2 h-2 rounded-full bg-yellow-500 mr-1"></span>Inactive`;
       }
     }
 
     if (heroUsername) heroUsername.textContent = masterUserData.username || "Agent";
     if (heroEmail) heroEmail.textContent = masterUserData.email || "N/A";
     if (heroContact) heroContact.textContent = masterUserData.contact || "None";
-    if (heroSignUpDate) {
-      heroSignUpDate.textContent =
-        activeSession.signUpDate ||
-        masterUserData.signUpDate ||
-        "N/A";
-    }
+    if (heroSignUpDate) heroSignUpDate.textContent = activeSession.signUpDate || masterUserData.signUpDate || "N/A";
 
     if (addrCountry) addrCountry.textContent = masterUserData.address?.country || "N.A";
     if (addrCity) addrCity.textContent = masterUserData.address?.city || "N.A";
     if (addrPostal) addrPostal.textContent = masterUserData.address?.postalCode || "N.A";
     if (addrHome) addrHome.textContent = masterUserData.address?.homeAddress || "N.A";
+
+    // ⚙️ AVATAR RENDERING ENGINE INSIDE REFRESH SYSTEM
+    const avatarRender = document.getElementById("user-avatar-render");
+    if (avatarRender) {
+      if (masterUserData && masterUserData.profileImage) {
+        avatarRender.src = masterUserData.profileImage;
+      } else if (activeSession && activeSession.profileImage) {
+        avatarRender.src = activeSession.profileImage;
+      } else {
+        avatarRender.src = "./public/image/default-avatar.png"; 
+      }
+    }
   }
 
   refreshProfileScreen();
 
-  // A. BIODATA MODAL OVERLAYS
+  // EVENT LISTENERS FOR MODALS
   if (editBioBtn) {
     editBioBtn.addEventListener("click", (e) => {
       e.preventDefault();
@@ -171,47 +175,25 @@ document.addEventListener("DOMContentLoaded", () => {
       document.getElementById("modal-contact").value = masterUserData?.contact || "";
       
       const modalEmailInput = document.getElementById("modal-locked-email");
-      if (modalEmailInput) {
-        modalEmailInput.value = masterUserData?.email || activeSession.email || "";
-      }
+      if (modalEmailInput) modalEmailInput.value = masterUserData?.email || activeSession.email || "";
 
       const modalPasswordInput = document.getElementById("modal-locked-password");
       if (modalPasswordInput) {
         modalPasswordInput.value = masterUserData?.password || "";
         modalPasswordInput.type = "password"; 
       }
-
       bioModal.classList.remove("hidden");
     });
   }
 
-  if (closeBioModal) {
-    closeBioModal.addEventListener("click", () => bioModal.classList.add("hidden"));
-  }
-
-  const togglePasswordBtn = document.getElementById("toggle-locked-pass");
-  const modalPasswordInput = document.getElementById("modal-locked-password");
-  if (togglePasswordBtn && modalPasswordInput) {
-    togglePasswordBtn.addEventListener("click", (e) => {
-      e.preventDefault();
-      const icon = togglePasswordBtn.querySelector("i");
-      if (modalPasswordInput.type === "password") {
-        modalPasswordInput.type = "text";
-        if (icon) icon.className = "fa-solid fa-eye-slash text-xs";
-      } else {
-        modalPasswordInput.type = "password";
-        if (icon) icon.className = "fa-solid fa-eye text-xs";
-      }
-    });
-  }
+  if (closeBioModal) closeBioModal.addEventListener("click", () => bioModal.classList.add("hidden"));
 
   if (bioForm) {
     bioForm.addEventListener("submit", (e) => {
       e.preventDefault();
       const inputFullName = document.getElementById("modal-fullname").value.trim();
       const inputContact = document.getElementById("modal-contact").value.trim();
-      const usernameField = document.getElementById("modal-username");
-      const inputUsername = usernameField ? usernameField.value.trim() : activeSession.username;
+      const inputUsername = document.getElementById("modal-username").value.trim();
 
       const allUsers = JSON.parse(localStorage.getItem("computer_grid_users")) || [];
       const userIndex = allUsers.findIndex(u => u.email === activeSession.email);
@@ -228,36 +210,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
         bioModal.classList.add("hidden");
         refreshProfileScreen();
-        
-        // ⚡ GINAMIT ANG LOCAL TOAST DRIVER PARA SIGURADONG GAGANA
         localShowToast("⚡ Biodata parameters synchronized successfully!");
       }
     });
   }
 
-  // 🔐 SECURITY GATE LOGIC
-  const triggerEmailGate = document.getElementById("trigger-email-gate");
-  const triggerPassGate = document.getElementById("trigger-pass-gate");
-
-  if (triggerEmailGate) {
-    triggerEmailGate.addEventListener("click", () => {
-      activeSecurityTarget = "email";
-      document.getElementById("gate-current-password").value = "";
-      if (securityGateModal) securityGateModal.classList.remove("hidden");
-    });
-  }
-
-  if (triggerPassGate) {
-    triggerPassGate.addEventListener("click", () => {
-      activeSecurityTarget = "password";
-      document.getElementById("gate-current-password").value = "";
-      if (securityGateModal) securityGateModal.classList.remove("hidden");
-    });
-  }
-
-  if (closeGateModal) {
-    closeGateModal.addEventListener("click", () => securityGateModal.classList.add("hidden"));
-  }
+  // SECURITY RE-AUTHENTICATION
+  if (triggerEmailGate) triggerEmailGate.addEventListener("click", () => { activeSecurityTarget = "email"; if (securityGateModal) securityGateModal.classList.remove("hidden"); });
+  if (triggerPassGate) triggerPassGate.addEventListener("click", () => { activeSecurityTarget = "password"; if (securityGateModal) securityGateModal.classList.remove("hidden"); });
+  if (closeGateModal) closeGateModal.addEventListener("click", () => securityGateModal.classList.add("hidden"));
 
   if (securityGateForm) {
     securityGateForm.addEventListener("submit", (e) => {
@@ -272,24 +233,17 @@ document.addEventListener("DOMContentLoaded", () => {
         sensitivePassForm.classList.add("hidden");
 
         const sensitiveTitle = document.getElementById("sensitive-title");
-
         if (sensitiveTitle) {
-          sensitiveTitle.classList.remove("text-white");
-          sensitiveTitle.classList.add("text-secondary");
+          sensitiveTitle.className = "text-lg font-semibold mb-4 border-b border-secondary/20 pb-2 text-secondary";
         }
 
         if (activeSecurityTarget === "email") {
           if (sensitiveTitle) sensitiveTitle.textContent = "Update Email Address";
           sensitiveEmailForm.classList.remove("hidden");
-          document.getElementById("update-new-email").value = "";
         } else if (activeSecurityTarget === "password") {
           if (sensitiveTitle) sensitiveTitle.textContent = "Update Security Password";
           sensitivePassForm.classList.remove("hidden");
-          document.getElementById("update-new-password").value = "";
-          document.getElementById("update-confirm-password").value = "";
         }
-
-        // 👍 FIXED: Tinanggal ang maling localShowToast dito (kasi bubuksan pa lang ang modal)
         if (sensitiveUpdateModal) sensitiveUpdateModal.classList.remove("hidden");
       } else {
         alert("❌ Incorrect password verification. Access denied.");
@@ -297,23 +251,16 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  closeSensitiveBtns.forEach(btn => {
-    btn.addEventListener("click", () => {
-      if (sensitiveUpdateModal) sensitiveUpdateModal.classList.add("hidden");
-    });
-  });
+  closeSensitiveBtns.forEach(btn => btn.addEventListener("click", () => sensitiveUpdateModal.classList.add("hidden")));
 
-  // Handle Update Email Process Flow
   if (sensitiveEmailForm) {
     sensitiveEmailForm.addEventListener("submit", (e) => {
       e.preventDefault();
       const newEmail = document.getElementById("update-new-email").value.trim().toLowerCase();
       const allUsers = JSON.parse(localStorage.getItem("computer_grid_users")) || [];
 
-      const emailExists = allUsers.some(u => u.email.toLowerCase() === newEmail && u.email.toLowerCase() !== activeSession.email.toLowerCase());
-
-      if (emailExists) {
-        alert("⚠️ Email address is already in use by another account.");
+      if (allUsers.some(u => u.email.toLowerCase() === newEmail && u.email.toLowerCase() !== activeSession.email.toLowerCase())) {
+        alert("⚠️ Email address is already in use.");
         return;
       }
 
@@ -321,21 +268,17 @@ document.addEventListener("DOMContentLoaded", () => {
       if (userIndex !== -1) {
         allUsers[userIndex].email = newEmail;
         localStorage.setItem("computer_grid_users", JSON.stringify(allUsers));
-
         activeSession.email = newEmail;
         localStorage.setItem("active_user_session", JSON.stringify(activeSession));
 
         sensitiveUpdateModal.classList.add("hidden");
         bioModal.classList.add("hidden"); 
         refreshProfileScreen();
-        
-        // ⚡ FIXED: Direktang tinawag ang local function ng tama!
-        localShowToast("📧 Email address updated and synchronized successfully!");
+        localShowToast("📧 Email address updated successfully!");
       }
     });
   }
 
-  // Handle Update Password Process Flow
   if (sensitivePassForm) {
     sensitivePassForm.addEventListener("submit", (e) => {
       e.preventDefault();
@@ -343,7 +286,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const confirmPassword = document.getElementById("update-confirm-password").value.trim();
   
       if (newPassword !== confirmPassword) {
-        alert("⚠️ Confirm password does not match with your entry.");
+        alert("⚠️ Passwords do not match.");
         return;
       }
   
@@ -353,32 +296,15 @@ document.addEventListener("DOMContentLoaded", () => {
       if (userIndex !== -1) {
         allUsers[userIndex].password = newPassword;
         localStorage.setItem("computer_grid_users", JSON.stringify(allUsers));
-  
         sensitiveUpdateModal.classList.add("hidden");
         bioModal.classList.add("hidden");
         refreshProfileScreen();
-        
-        // ⚡ FIXED: Tinanggal ang window check, ginamit ang local engine sa TAMANG ORAS (dito sa dulo ng submit)
         localShowToast("🔒 Security password updated successfully!");
       }
     });
   }
 
-  if (toggleUpdatePassBtn && updatePasswordInput) {
-    toggleUpdatePassBtn.addEventListener("click", (e) => {
-      e.preventDefault();
-      const icon = toggleUpdatePassBtn.querySelector("i");
-      if (updatePasswordInput.type === "password") {
-        updatePasswordInput.type = "text";
-        if (icon) icon.className = "fa-solid fa-eye-slash text-xs";
-      } else {
-        updatePasswordInput.type = "password";
-        if (icon) icon.className = "fa-solid fa-eye text-xs";
-      }
-    });
-  }
-
-  // B. ADDRESS MODAL OVERLAYS
+  // ⚙️ ADDRESS SUBMIT ENGINE AND WRAPPER CLOSURES (FIXED)
   if (editAddrBtn) {
     editAddrBtn.addEventListener("click", (e) => {
       e.preventDefault();
@@ -394,104 +320,26 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  if (closeAddrModal) {
-    closeAddrModal.addEventListener("click", () => addrModal.classList.add("hidden"));
-  }
+  if (closeAddrModal) closeAddrModal.addEventListener("click", () => addrModal.classList.add("hidden"));
 
   if (addrForm) {
     addrForm.addEventListener("submit", (e) => {
       e.preventDefault();
-      const country = document.getElementById("modal-country").value.trim();
-      const city = document.getElementById("modal-city").value.trim();
-      const postalCode = document.getElementById("modal-postal").value.trim();
-      const homeAddress = document.getElementById("modal-home").value.trim();
-
       const allUsers = JSON.parse(localStorage.getItem("computer_grid_users")) || [];
       const userIndex = allUsers.findIndex(u => u.email === activeSession.email);
 
       if (userIndex !== -1) {
-        allUsers[userIndex].address = { country, city, postalCode, homeAddress };
+        allUsers[userIndex].address = {
+          country: document.getElementById("modal-country").value.trim(),
+          city: document.getElementById("modal-city").value.trim(),
+          postalCode: document.getElementById("modal-postal").value.trim(),
+          homeAddress: document.getElementById("modal-home").value.trim()
+        };
         localStorage.setItem("computer_grid_users", JSON.stringify(allUsers));
-
         addrModal.classList.add("hidden");
         refreshProfileScreen();
-        localShowToast("🌍 Address grid layout configuration saved!");
+        localShowToast("📍 Shipping address updated successfully!");
       }
     });
   }
-});
-
-
-//PROFILE AVATAR
-// 1. Trigger para buksan ang Local File Manager ng device
-function triggerFileInput() {
-  document.getElementById('hidden-avatar-input').click();
-}
-
-// 2. Basahin ang image, i-convert sa Base64, at i-commit sa LocalStorage
-function handleAvatarUpload(event) {
-  const file = event.target.files[0];
-  
-  if (file) {
-      // Guard Check Rule: Limitahan sa 2MB para hindi sumabog ang localStorage limits
-      if (file.size > 2 * 1024 * 1024) {
-          alert("Masyadong malaki ang larawan! Pumili ng file na mababa sa 2MB para mag-save.");
-          event.target.value = ""; // Clear values
-          return;
-      }
-
-      const reader = new FileReader();
-      
-      reader.onload = function(e) {
-          const base64Str = e.target.result;
-          
-          // Kuhanin ang active user records mula sa database mo
-          let currentUser = JSON.parse(localStorage.getItem('active_user_session'));
-          let allUsers = JSON.parse(localStorage.getItem('computer_grid_users')) || [];
-
-          if (currentUser) {
-              // I-save ang Base64 string sa local app instance fields
-              currentUser.avatar = base64Str;
-              localStorage.setItem('active_user_session', JSON.stringify(currentUser));
-
-              // I-sync ang record node sa master users block array
-              let userIndex = allUsers.findIndex(user => user.username === currentUser.username);
-              if (userIndex !== -1) {
-                  allUsers[userIndex].avatar = base64Str;
-                  localStorage.setItem('computer_grid_users', JSON.stringify(allUsers));
-              }
-
-              // Patakbuhin agad ang display update function para makita ang pagbabago
-              renderUserAvatar();
-              
-              // Kung may load global navbar notification function ka, pwede mo ring tawagin dito:
-              // if(typeof updateNavbarAvatar === "function") updateNavbarAvatar();
-          }
-      };
-      
-      reader.readAsDataURL(file); // Execute logic stream conversion
-  }
-}
-
-// 3. Render Loop Execution Controller (Tawagin mo ito sa initialization / window onload phase mo)
-function renderUserAvatar() {
-  const session = JSON.parse(localStorage.getItem('active_user_session'));
-  const avatarImg = document.getElementById('user-avatar-render');
-  const defaultIcon = document.getElementById('default-avatar-icon');
-
-  if (session && session.avatar) {
-      // Kung may nakitang existing Base64, ipakita ang image node at itago ang static user icon
-      avatarImg.src = session.avatar;
-      avatarImg.classList.remove('hidden');
-      defaultIcon.classList.add('hidden');
-  } else {
-      // Fallback layout state kung bagong gawa o walang upload record
-      avatarImg.classList.add('hidden');
-      defaultIcon.classList.remove('hidden');
-  }
-}
-
-// Siguraduhing tumatakbo ito sa tuwing naglo-load ang profile page para laging up-to-date ang mukha ng account mo
-document.addEventListener("DOMContentLoaded", () => {
-  renderUserAvatar();
 });
