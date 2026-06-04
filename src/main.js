@@ -280,5 +280,18 @@ if(document.getElementById("product-highlights-container")){
   renderProductHighlights();
 }
 
+// Page-specific scripts must load as modules (Vite bundles them for Vercel/dist)
+if (document.getElementById("biodata")) {
+  import("./profile-handle.js");
+}
+
+if (document.getElementById("orders-history-list")) {
+  import("./order-history-list.js");
+}
+
+if (document.getElementById("archived-history-list")) {
+  import("./archive-list.js");
+}
+
 });
 

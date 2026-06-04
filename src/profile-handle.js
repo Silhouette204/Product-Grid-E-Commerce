@@ -63,6 +63,9 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
+  const matchUserEmail = (userEmail) =>
+    (userEmail || "").trim().toLowerCase() === (activeSession.email || "").trim().toLowerCase();
+
   // DOM HOOKS
   const heroUsername = document.getElementById("hero-username");
   const heroEmail = document.getElementById("hero-email");
@@ -107,9 +110,15 @@ document.addEventListener("DOMContentLoaded", () => {
   // REFRESH SCREEN FUNCTION
   function refreshProfileScreen() {
     const allUsers = JSON.parse(localStorage.getItem("computer_grid_users")) || [];
-    const masterUserData = allUsers.find(u => u.email === activeSession.email);
+    const masterUserData = allUsers.find(u => matchUserEmail(u.email));
 
-    if (!masterUserData) return;
+    if (!masterUserData) {
+      if (heroUsername) heroUsername.textContent = activeSession.username || "Agent";
+      if (heroEmail) heroEmail.textContent = activeSession.email || "N/A";
+      if (heroContact) heroContact.textContent = activeSession.contact || "None";
+      if (heroSignUpDate) heroSignUpDate.textContent = activeSession.signUpDate || "N/A";
+      return;
+    }
 
     if (bioFullName) bioFullName.textContent = masterUserData.fullname || "N.A";
     if (bioUsername) bioUsername.textContent = masterUserData.username || "N.A"; 
@@ -168,7 +177,7 @@ document.addEventListener("DOMContentLoaded", () => {
     editBioBtn.addEventListener("click", (e) => {
       e.preventDefault();
       const allUsers = JSON.parse(localStorage.getItem("computer_grid_users")) || [];
-      const masterUserData = allUsers.find(u => u.email === activeSession.email);
+      const masterUserData = allUsers.find(u => matchUserEmail(u.email));
       
       document.getElementById("modal-fullname").value = masterUserData?.fullname || "";
       document.getElementById("modal-username").value = masterUserData?.username || "";
@@ -196,7 +205,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const inputUsername = document.getElementById("modal-username").value.trim();
 
       const allUsers = JSON.parse(localStorage.getItem("computer_grid_users")) || [];
-      const userIndex = allUsers.findIndex(u => u.email === activeSession.email);
+      const userIndex = allUsers.findIndex(u => matchUserEmail(u.email));
 
       if (userIndex !== -1) {
         allUsers[userIndex].fullname = inputFullName;
@@ -225,7 +234,7 @@ document.addEventListener("DOMContentLoaded", () => {
       e.preventDefault();
       const enteredPassword = document.getElementById("gate-current-password").value;
       const allUsers = JSON.parse(localStorage.getItem("computer_grid_users")) || [];
-      const masterUserData = allUsers.find(u => u.email === activeSession.email);
+      const masterUserData = allUsers.find(u => matchUserEmail(u.email));
 
       if (masterUserData && masterUserData.password === enteredPassword) {
         securityGateModal.classList.add("hidden");
@@ -264,7 +273,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      const userIndex = allUsers.findIndex(u => u.email === activeSession.email);
+      const userIndex = allUsers.findIndex(u => matchUserEmail(u.email));
       if (userIndex !== -1) {
         allUsers[userIndex].email = newEmail;
         localStorage.setItem("computer_grid_users", JSON.stringify(allUsers));
@@ -291,7 +300,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
   
       const allUsers = JSON.parse(localStorage.getItem("computer_grid_users")) || [];
-      const userIndex = allUsers.findIndex(u => u.email === activeSession.email);
+      const userIndex = allUsers.findIndex(u => matchUserEmail(u.email));
   
       if (userIndex !== -1) {
         allUsers[userIndex].password = newPassword;
@@ -309,7 +318,7 @@ document.addEventListener("DOMContentLoaded", () => {
     editAddrBtn.addEventListener("click", (e) => {
       e.preventDefault();
       const allUsers = JSON.parse(localStorage.getItem("computer_grid_users")) || [];
-      const masterUserData = allUsers.find(u => u.email === activeSession.email);
+      const masterUserData = allUsers.find(u => matchUserEmail(u.email));
       
       document.getElementById("modal-country").value = masterUserData?.address?.country || "";
       document.getElementById("modal-city").value = masterUserData?.address?.city || "";
@@ -326,7 +335,7 @@ document.addEventListener("DOMContentLoaded", () => {
     addrForm.addEventListener("submit", (e) => {
       e.preventDefault();
       const allUsers = JSON.parse(localStorage.getItem("computer_grid_users")) || [];
-      const userIndex = allUsers.findIndex(u => u.email === activeSession.email);
+      const userIndex = allUsers.findIndex(u => matchUserEmail(u.email));
 
       if (userIndex !== -1) {
         allUsers[userIndex].address = {
