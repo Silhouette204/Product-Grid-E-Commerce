@@ -4,15 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
-  
   <title>Archived Orders - Computer Grid</title>
 </head>
-<body class="body-container font-poppins line-height-1.6">
+<body class="body-container font-poppins line-height-1.6 bg-zinc-950 text-zinc-100">
 
   <div id="nav-container"></div>
 
-  <div class="main-layout ">
-    <div class="main-hero container-1">
+  <div class="main-layout">
+    <div class="main-hero container-1 my-10 px-4 max-w-7xl mx-auto">
       <div class="mt-10 flex flex-col gap-3 lg:mt-0">
         <h1 class="text-3xl lg:text-5xl font-semibold text-secondary">Archived Records</h1>
         <p class="text-secondary/70 text-sm lg:text-base max-w-3xl">
@@ -25,12 +24,12 @@
           <i class="fa-solid fa-box-archive text-secondary text-2xl"></i>
           <h2 class="text-xl md:text-3xl font-bold text-secondary">Archive Table</h2>
         </div>
-        <a href="order.html" class="text-primary bg-secondary py-2 px-4 rounded-lg  hover:bg-dark transition hover:text-secondary">
+        <a href="order.html" class="text-primary bg-secondary py-2 px-4 rounded-lg hover:bg-dark transition hover:text-secondary">
           <i class="fa-solid fa-arrow-left mr-1"></i> Back to My Orders
         </a>
       </div>
 
-      <div class="w-full overflow-x-auto border border-zinc-800 bg-zinc-900/40 backdrop-blur-sm shadow-xl">
+      <div class="w-full overflow-x-auto border border-zinc-800 bg-zinc-900/40 backdrop-blur-sm shadow-xl rounded-xl">
         <table class="w-full text-left border-collapse min-w-[600px]">
           <thead>
             <tr class="border-b text-primary border-zinc-800 bg-secondary text-zinc-400 text-xs uppercase tracking-wider font-mono">
@@ -40,10 +39,9 @@
             </tr>
           </thead>
           <tbody id="archived-history-list" class="divide-y divide-zinc-800/60 text-sm">
-             </tbody>
+            </tbody>
         </table>
       </div>
-
     </div>
   </div>
 
@@ -58,11 +56,9 @@
   </div>
 
   <div id="toast-container" class="fixed bottom-5 right-5 z-[200] space-y-3 pointer-events-none"></div>
+  <div id="cart-container"></div>
+
+  <script type="module" src="./src/main.js"></script>
+  <script src="./src/archive-list.js"></script>
 </body>
-</div>
-
-<div id="cart-container"></div>
-
-  <script type="module" src="/src/main.js"></script>
-
 </html>
