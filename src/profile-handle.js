@@ -61,7 +61,7 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
-  // 🚨 CRITICAL DOM HOOKS (Dito nadale ni Cursor kaya nawalan ng malay ang mga buttons)
+
   const heroUsername = document.getElementById("hero-username");
   const heroEmail = document.getElementById("hero-email");
   const heroContact = document.getElementById("hero-contact");
@@ -109,59 +109,60 @@ document.addEventListener("DOMContentLoaded", () => {
   // ==========================================
   // SCREEN REFRESH & STATE RENDER ENGINE
   // ==========================================
-  function refreshProfileScreen() {
-    const allUsers = JSON.parse(localStorage.getItem("computer_grid_users")) || [];
-    const masterUserData = allUsers.find(u => u.email.toLowerCase() === activeSession.email.toLowerCase());
+function refreshProfileScreen() {
+  const allUsers = JSON.parse(localStorage.getItem("computer_grid_users")) || [];
+  
+  // Subukang hanapin sa master array, pero kung wala, huwag nating patayin ang script!
+  const masterUserData = allUsers.find(u => u.email.toLowerCase() === activeSession.email.toLowerCase()) || {};
 
-    if (!masterUserData) return;
+  // Render Text to Fields (Biodata Section sa Baba)
+  if (bioFullName) bioFullName.textContent = masterUserData.fullname || "N.A";
+  if (bioUsername) bioUsername.textContent = masterUserData.username || activeSession.username || "N.A"; 
+  if (bioContact) bioContact.textContent = masterUserData.contact || activeSession.contact || "N.A";
+  if (bioEmail) bioEmail.textContent = masterUserData.email || activeSession.email || "N.A";
 
-    // Render Text to Fields
-    if (bioFullName) bioFullName.textContent = masterUserData.fullname || "N.A";
-    if (bioUsername) bioUsername.textContent = masterUserData.username || "N.A"; 
-    if (bioContact) bioContact.textContent = masterUserData.contact || "N.A";
-    if (bioEmail) bioEmail.textContent = masterUserData.email || "N.A";
+  // ⚡ EMERGENCY FIX FOR VERCEL DISPLAY PANEL (image_1d080c.png)
+  // Kung walang masterUserData, kukuha tayo direkta sa activeSession para hindi mag-blanko!
+  if (heroUsername) heroUsername.textContent = masterUserData.username || activeSession.username || "Agent";
+  if (heroEmail) heroEmail.textContent = masterUserData.email || activeSession.email || "--";
+  if (heroContact) heroContact.textContent = masterUserData.contact || activeSession.contact || "--";
+  if (heroSignUpDate) heroSignUpDate.textContent = masterUserData.signUpDate || activeSession.signUpDate || "--";
 
-    if (heroUsername) heroUsername.textContent = masterUserData.username || "Agent";
-    if (heroEmail) heroEmail.textContent = masterUserData.email || "--";
-    if (heroContact) heroContact.textContent = masterUserData.contact || "--";
-    if (heroSignUpDate) heroSignUpDate.textContent = activeSession.signUpDate || masterUserData.signUpDate || "--";
+  if (addrCountry) addrCountry.textContent = masterUserData.address?.country || "N.A";
+  if (addrCity) addrCity.textContent = masterUserData.address?.city || "N.A";
+  if (addrPostal) addrPostal.textContent = masterUserData.address?.postalCode || "N.A";
+  if (addrHome) addrHome.textContent = masterUserData.address?.homeAddress || "N.A";
 
-    if (addrCountry) addrCountry.textContent = masterUserData.address?.country || "N.A";
-    if (addrCity) addrCity.textContent = masterUserData.address?.city || "N.A";
-    if (addrPostal) addrPostal.textContent = masterUserData.address?.postalCode || "N.A";
-    if (addrHome) addrHome.textContent = masterUserData.address?.homeAddress || "N.A";
+  // 📦 RE-SYNC ORDER STATUS & TRANSACTION ENGINE (Ipagpatuloy ang lumang code...)
+  if (orderStatusContainer) {
+    const allOrdersActive = JSON.parse(localStorage.getItem("computer_grid_orders")) || [];
+    const allOrdersArchived = JSON.parse(localStorage.getItem("computer_grid_archived")) || [];
+    const allOrders = [...allOrdersActive, ...allOrdersArchived];
 
-    // 📦 RE-SYNC ORDER STATUS & TRANSACTION ENGINE
-    if (orderStatusContainer) {
-      const allOrdersActive = JSON.parse(localStorage.getItem("computer_grid_orders")) || [];
-      const allOrdersArchived = JSON.parse(localStorage.getItem("computer_grid_archived")) || [];
-      const allOrders = [...allOrdersActive, ...allOrdersArchived];
+    const userOrders = allOrders.filter(order => {
+      const orderEmail = order.userEmail || order.email || "";
+      return orderEmail.trim().toLowerCase() === activeSession.email.trim().toLowerCase();
+    });
 
-      // Safe deep filtering para kahit magkaiba ang key naming sa pages, hihilahin pa rin
-      const userOrders = allOrders.filter(order => {
-        const orderEmail = order.userEmail || order.email || "";
-        return orderEmail.trim().toLowerCase() === activeSession.email.trim().toLowerCase();
-      });
-
-      if (userOrders.length > 0) {
-        orderStatusContainer.className = "text-emerald-400 ml-1 inline-flex items-center font-semibold text-sm";
-        orderStatusContainer.innerHTML = `<span class="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse mr-1"></span>Active`;
-      } else {
-        orderStatusContainer.className = "text-yellow-500 ml-1 inline-flex items-center font-semibold text-sm";
-        orderStatusContainer.innerHTML = `<span class="inline-block w-2 h-2 rounded-full bg-yellow-500 mr-1"></span>Inactive`;
-      }
-    }
-
-    // Avatar Render Check
-    const avatarRender = document.getElementById("user-avatar-render");
-    if (avatarRender) {
-      if (masterUserData && masterUserData.profileImage) {
-        avatarRender.src = masterUserData.profileImage;
-      } else {
-        avatarRender.src = "./public/image/default-avatar.png"; 
-      }
+    if (userOrders.length > 0) {
+      orderStatusContainer.className = "text-emerald-400 ml-1 inline-flex items-center font-semibold text-sm";
+      orderStatusContainer.innerHTML = `<span class="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse mr-1"></span>Active`;
+    } else {
+      orderStatusContainer.className = "text-yellow-500 ml-1 inline-flex items-center font-semibold text-sm";
+      orderStatusContainer.innerHTML = `<span class="inline-block w-2 h-2 rounded-full bg-yellow-500 mr-1"></span>Inactive`;
     }
   }
+
+  // Avatar Render Check
+  const avatarRender = document.getElementById("user-avatar-render");
+  if (avatarRender) {
+    if (masterUserData && masterUserData.profileImage) {
+      avatarRender.src = masterUserData.profileImage;
+    } else {
+      avatarRender.src = "./public/image/default-avatar.png"; 
+    }
+  }
+}
 
   // Initial Load Trigger
   refreshProfileScreen();
