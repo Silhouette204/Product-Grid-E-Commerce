@@ -45,7 +45,7 @@ export default defineConfig ({
         cooler: resolve(__dirname, "product-cooler.html"),
         storage: resolve(__dirname, "product-storage.html"),
         fan: resolve(__dirname, "product-fan.html"),
-        case: resolve(__dirname, "product-case.html")
+        "case": resolve(__dirname, "product-case.html")
     }
    }
   }
